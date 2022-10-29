@@ -122,6 +122,7 @@ class GraphNode():
         self.pid = processID
         self.children = {}
         self.errorFlag = errFalg
+        self.hasErrorChild = False
 
     def setParent(self, parent):
         self.parent = parent
@@ -130,7 +131,7 @@ class GraphNode():
         self.children[child] = True
 
     def __repr__(self):
-        return f'Node(SpanID={self.sid}, startTime={self.startTime}, duration={self.duration}, parent={self.parent}, opName={self.opName}, hasError={self.errorFlag})'
+        return f'Node(SpanID={self.sid}, startTime={self.startTime}, duration={self.duration}, parent={self.parent}, opName={self.opName}, hasError={self.errorFlag}, hasErrorChild={self.hasErrorChild})'
 
 
 class Graph():
@@ -193,6 +194,8 @@ class Graph():
 
         self.sanitizeOverflowingChildren(self.rootNode)
 
+        self.markErrorChildren()
+
         self.setErrorNodes()
 
         if debug_on:
@@ -200,6 +203,17 @@ class Graph():
             logging.debug(f"{self.shrinkCounter} spans shrank")
             logging.debug(f"{self.totalDrop} spans dropped")
             logging.debug(f"total executionTime {self.rootNode.duration}")
+
+    def markErrorChildren(self):
+        curNode = self.rootNode
+        self.helper(curNode)
+
+    def helper(self, curNode):
+        res = False
+        for child in curNode.children:
+            res = res or self.helper(child)
+        curNode.hasErrorChild = res
+        return res or curNode.errorFlag
 
     def setErrorNodes(self):
         for spanId in self.nodeHT:
@@ -449,6 +463,47 @@ class Graph():
             debug_on and logging.debug(f"lastStartTime = {lastStartTime}")
         return criticalPath
 
+    def mycomputeCriticalPath(self, curNode):
+        # Recursively find the critical path for curNode.
+        if not (curNode.errorFlag or curNode.hasErrorChild):
+            return []
+
+        debug_on and logging.debug(
+            f"Working on CP parent {curNode} {self.canonicalOpName(curNode)}")
+
+        # step 0. curNode is obviously on the critical path.
+        criticalPath = [curNode]
+
+        if len(curNode.children) == 0:
+            debug_on and logging.debug(f"{curNode} has no children")
+            return criticalPath
+
+        # step 1. reverse sort all children of curNode by their end time.
+        sortedChildren = sorted(curNode.children,
+                                key=lambda x: x.endTime)[::-1]
+
+        # step 2. begin by the child who finishes last
+        lrc = sortedChildren[0]
+        criticalPath.extend(self.mycomputeCriticalPath(lrc))
+        lastStartTime = lrc.startTime
+
+        for cn in sortedChildren[
+                1:]:  # first one (actually the last one) is already added
+            # step 3. get the child who finished just before the start of lrc's start
+            if self.happensBefore(curNode, sortedChildren, cn, lrc):
+                debug_on and logging.debug(
+                    f"Adding child {cn} {self.canonicalOpName(cn)} to CP")
+                # # step 4. recur on cn, which is on the critical path.
+                criticalPath.extend(self.mycomputeCriticalPath(cn))
+                lrc = cn
+                lastStartTime = min(lastStartTime, cn.startTime)
+            else:
+                debug_on and logging.debug(
+                    f"NOT adding child {cn} {self.canonicalOpName(cn)} to CP")
+
+            debug_on and logging.debug(f"lastStartTime = {lastStartTime}")
+        return criticalPath
+
     def numSyncEventsInWindowInclusive(self, children, startTime, endTime):
         numEvents = 0
 
@@ -496,56 +551,21 @@ class Graph():
         return self.computeCriticalPath(self.rootNode)
 
     def findCriticalPathWithErrors(self):
-        criticalPath = self.computeCriticalPath(self.rootNode)
-        # print(criticalPath)
-        filteredCriticalPath = []
-        # criticalPath = deepcopy(criticalPath)
+        return self.mycomputeCriticalPath(self.rootNode)
 
-        # start from end
-        # now = criticalPath[len(criticalPath) - 1]
+        # for node in reversed(criticalPath):
+        #     if not node.errorFlag or node.parent == None:
+        #         continue
 
-        # # Go until an error is found
-        # while type(now) == GraphNode and now.errorFlag != True:
-        #     # print(f"now at {now.sid}")
-        #     now = now.parent
+        #     new_node = node
+        #     while (node.parent.errorFlag != True and node.parent != self.rootNode and node != self.rootNode):
+        #         new_node.parent = new_node.parent.parent
 
-        # if type(now) == GraphNode and now.errorFlag == True:
-        #     # append the first error
-        #     filteredCriticalPath.append(now)
-        #     # print("appending 1st")
-        #     parent = now.parent
-        #     while parent != None:
-        #         if parent.errorFlag:
-        #             # print(f"appending")
-        #             filteredCriticalPath.append(parent)
-        #         parent = parent.parent
+        #     filteredCriticalPath.append(new_node)
 
-        #     if filteredCriticalPath[-1] != criticalPath[0]:
-        #         filteredCriticalPath.append(criticalPath[0])
-            # print(f"--------------{filteredCriticalPath}")
-
-        for node in reversed(criticalPath):
-            if not node.errorFlag or node.parent == None:
-                continue
-
-            new_node = node
-            while (node.parent.errorFlag != True and node.parent != self.rootNode and node != self.rootNode):
-                new_node.parent = new_node.parent.parent
-            
-
-            filteredCriticalPath.append(new_node)
-        
-        filteredCriticalPath.append(self.rootNode)
-
-        filteredCriticalPath = filteredCriticalPath[::-1]
-            # set parents accordingly
-            # filteredCriticalPath[0].parent = None
-            # for i in range(1, len(filteredCriticalPath)):
-            #     filteredCriticalPath[i].parent = filteredCriticalPath[i-1]
-            # print(f"========{filteredCriticalPath}")
-
-        # print(f"returning {filteredCriticalPath[::-1]}")
-        return filteredCriticalPath
+        # filteredCriticalPath.append(self.rootNode)
+        # filteredCriticalPath = filteredCriticalPath[::-1]
+        # return filteredCriticalPath
 
     def canonicalOpName(self, node):
         # return the canonical name of the span in "[serviceName] operationName" fashion
