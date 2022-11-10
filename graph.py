@@ -486,6 +486,63 @@ class Graph():
         lrc = sortedChildren[0]
         criticalPath.extend(self.computeCriticalPathWithOnlyErrors(lrc))
         lastStartTime = lrc.startTime
+        error_duration = 0
+        if lrc in criticalPath:
+            error_duration += lrc.duration
+
+        for cn in sortedChildren[
+                1:]:  # first one (actually the last one) is already added
+            # step 3. get the child who finished just before the start of lrc's start
+            if self.happensBefore(curNode, sortedChildren, cn, lrc):
+                debug_on and logging.debug(
+                    f"Adding child {cn} {self.canonicalOpName(cn)} to CP")
+                # # step 4. recur on cn, which is on the critical path.
+                criticalPath.extend(self.computeCriticalPathWithOnlyErrors(cn))
+                lrc = cn
+                lastStartTime = min(lastStartTime, cn.startTime)
+                if lrc in criticalPath:
+                    error_duration += lrc.duration
+            else:
+                debug_on and logging.debug(
+                    f"NOT adding child {cn} {self.canonicalOpName(cn)} to CP")
+
+            debug_on and logging.debug(f"lastStartTime = {lastStartTime}")
+        
+        if not curNode.errorFlag:
+            curNode.duration = error_duration
+        return criticalPath
+    
+    def computeCriticalPathExcludingErrors(self, curNode):
+        # Recursively find the critical path for curNode.
+        if curNode.errorFlag:
+            print(f"--returning")
+            return []
+
+        debug_on and logging.debug(
+            f"Working on CP parent {curNode} {self.canonicalOpName(curNode)}")
+
+        # step 0. curNode is obviously on the critical path.
+        criticalPath = [curNode]
+
+        if len(curNode.children) == 0:
+            debug_on and logging.debug(f"{curNode} has no children")
+            return criticalPath
+
+        # step 1. reverse sort all children of curNode by their end time.
+        sortedChildren = sorted(curNode.children,
+                                key=lambda x: x.endTime)[::-1]
+
+        # remove all error containing children
+        sortedChildren = list(
+            filter(lambda ch: not ch.errorFlag, curNode.children))
+
+        if len(sortedChildren) == 0:
+            debug_on and logging.debug(f"{curNode} has all error children")
+            return criticalPath
+        # step 2. begin by the child who finishes last
+        lrc = sortedChildren[0]
+        criticalPath.extend(self.computeCriticalPathExcludingErrors(lrc))
+        lastStartTime = lrc.startTime
 
         for cn in sortedChildren[
                 1:]:  # first one (actually the last one) is already added
@@ -553,69 +610,10 @@ class Graph():
     def findCriticalPathWithOnlyErrors(self):
         return self.computeCriticalPathWithOnlyErrors(self.rootNode)
 
-        # for node in reversed(criticalPath):
-        #     if not node.errorFlag or node.parent == None:
-        #         continue
-
-        #     new_node = node
-        #     while (node.parent.errorFlag != True and node.parent != self.rootNode and node != self.rootNode):
-        #         new_node.parent = new_node.parent.parent
-
-        #     filteredCriticalPath.append(new_node)
-
-        # filteredCriticalPath.append(self.rootNode)
-        # filteredCriticalPath = filteredCriticalPath[::-1]
-        # return filteredCriticalPath
     def findCriticalPathExcludingErrors(self):
         return self.computeCriticalPathExcludingErrors(self.rootNode)
     
-    def computeCriticalPathExcludingErrors(self, curNode):
-        # Recursively find the critical path for curNode.
-        if curNode.errorFlag:
-            print(f"--returning")
-            return []
-
-        debug_on and logging.debug(
-            f"Working on CP parent {curNode} {self.canonicalOpName(curNode)}")
-
-        # step 0. curNode is obviously on the critical path.
-        criticalPath = [curNode]
-
-        if len(curNode.children) == 0:
-            debug_on and logging.debug(f"{curNode} has no children")
-            return criticalPath
-
-        # step 1. reverse sort all children of curNode by their end time.
-        sortedChildren = sorted(curNode.children,
-                                key=lambda x: x.endTime)[::-1]
-        
-        # remove all error containing children
-        sortedChildren = list(filter(lambda ch: not ch.errorFlag,curNode.children))
-
-        if len(sortedChildren) == 0:
-            debug_on and logging.debug(f"{curNode} has all error children")
-            return criticalPath
-        # step 2. begin by the child who finishes last
-        lrc = sortedChildren[0]
-        criticalPath.extend(self.computeCriticalPathExcludingErrors(lrc))
-        lastStartTime = lrc.startTime
-
-        for cn in sortedChildren[
-                1:]:  # first one (actually the last one) is already added
-            # step 3. get the child who finished just before the start of lrc's start
-            if self.happensBefore(curNode, sortedChildren, cn, lrc):
-                debug_on and logging.debug(
-                    f"Adding child {cn} {self.canonicalOpName(cn)} to CP")
-                # # step 4. recur on cn, which is on the critical path.
-                criticalPath.extend(self.computeCriticalPathWithOnlyErrors(cn))
-                lrc = cn
-                lastStartTime = min(lastStartTime, cn.startTime)
-            else:
-                debug_on and logging.debug(
-                    f"NOT adding child {cn} {self.canonicalOpName(cn)} to CP")
-
-            debug_on and logging.debug(f"lastStartTime = {lastStartTime}")
-        return criticalPath
+    
 
     def canonicalOpName(self, node):
         # return the canonical name of the span in "[serviceName] operationName" fashion
