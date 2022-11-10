@@ -26,11 +26,11 @@
                     "duration": 100,
                     "processID": "S1",
                     "warnings": null,
-                    "tags":[
+                    "tags": [
                         {
-                            "key":"error",
-                            "type":"bool",
-                            "value":"true"
+                            "key": "error",
+                            "type": "bool",
+                            "value": "true"
                         }
                     ]
                 },
@@ -48,13 +48,6 @@
                             "traceID": "A",
                             "spanID": "A"
                         }
-                    ],
-                    "tags": [
-                        {
-                            "key": "error",
-                            "type": "bool",
-                            "value": "true"
-                        }
                     ]
                 },
                 {
@@ -70,13 +63,6 @@
                             "refType": "CHILD_OF",
                             "traceID": "A",
                             "spanID": "B"
-                        }
-                    ],
-                    "tags": [
-                        {
-                            "key": "error",
-                            "type": "bool",
-                            "value": "true"
                         }
                     ]
                 }

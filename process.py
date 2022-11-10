@@ -259,7 +259,7 @@ def process(filename):
         res = graph.findCriticalPath()
         debug_on and logging.debug("critical path:" + str(res))
 
-        res1 = graph.findCriticalPathWithErrors()
+        res1 = graph.findCriticalPathWithOnlyErrors()
 
         metrics = graph.getMetrics(res1)
         # metrics = graph.getMetrics(res)
