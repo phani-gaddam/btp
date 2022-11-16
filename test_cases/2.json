@@ -4,13 +4,15 @@
             "processes": {
                 "S1": {
                     "serviceName": "S1",
-                    "tags": [
-                    ]
+                    "tags": []
                 },
                 "S2": {
                     "serviceName": "S2",
-                    "tags": [
-                    ]
+                    "tags": []
+                },
+                "S3": {
+                    "serviceName": "S3",
+                    "tags": []
                 }
             },
             "traceID": "A",
@@ -39,15 +41,32 @@
                             "traceID": "A",
                             "spanID": "A"
                         }
+                    ],
+                    "tags": [
+                        {
+                            "key": "error",
+                            "type": "bool",
+                            "value": "true"
+                        }
+                    ]
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "C",
+                    "operationName": "O3",
+                    "startTime": 20,
+                    "duration": 10,
+                    "processID": "S3",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "B"
+                        }
                     ]
                 }
             ]
-        }
-        ],
-    "testing": [
-        {
-            "[S1] O1": 50,
-            "[S2] O2": 50
         }
     ],
     "total": 0,

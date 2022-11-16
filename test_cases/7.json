@@ -4,18 +4,19 @@
             "processes": {
                 "S1": {
                     "serviceName": "S1",
-                    "tags": [
-                    ]
+                    "tags": []
                 },
                 "S2": {
                     "serviceName": "S2",
-                    "tags": [
-                    ]
+                    "tags": []
                 },
                 "S3": {
                     "serviceName": "S3",
-                    "tags": [
-                    ]
+                    "tags": []
+                },
+                "S4": {
+                    "serviceName": "S4",
+                    "tags": []
                 }
             },
             "traceID": "A",
@@ -28,14 +29,21 @@
                     "startTime": 0,
                     "duration": 100,
                     "processID": "S1",
-                    "warnings": null
+                    "warnings": null,
+                    "tags": [
+                        {
+                            "key": "error",
+                            "type": "bool",
+                            "value": "true"
+                        }
+                    ]
                 },
                 {
                     "traceID": "A",
                     "spanID": "B",
                     "operationName": "O2",
                     "startTime": 10,
-                    "duration": 100,
+                    "duration": 50,
                     "processID": "S2",
                     "warnings": null,
                     "references": [
@@ -44,13 +52,20 @@
                             "traceID": "A",
                             "spanID": "A"
                         }
+                    ],
+                    "tags": [
+                        {
+                            "key": "error",
+                            "type": "bool",
+                            "value": "true"
+                        }
                     ]
                 },
                 {
                     "traceID": "A",
                     "spanID": "C",
                     "operationName": "O3",
-                    "startTime": 40,
+                    "startTime": 20,
                     "duration": 10,
                     "processID": "S3",
                     "warnings": null,
@@ -61,15 +76,24 @@
                             "spanID": "B"
                         }
                     ]
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "D",
+                    "operationName": "O4",
+                    "startTime": 70,
+                    "duration": 20,
+                    "processID": "S4",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "A"
+                        }
+                    ]
                 }
             ]
-        }
-        ],
-    "testing": [
-        {
-            "[S1] O1": 10,
-            "[S2] O2": 80,
-            "[S3] O3": 10
         }
     ],
     "total": 0,
