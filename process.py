@@ -111,7 +111,7 @@ argParser.add_argument('--numOperation',
 
 argParser.add_argument(
     '-we',
-    '--WithErrors',
+    '--withErrors',
     dest='WithErrors',
     action='store_true',
     default=False,
@@ -121,7 +121,7 @@ argParser.add_argument(
 
 argParser.add_argument(
     '-ee',
-    '--ExcludingErrors',
+    '--excludingErrors',
     dest='ExcludingErrors',
     action='store_true',
     default=False,

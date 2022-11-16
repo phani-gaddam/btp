@@ -31,4 +31,8 @@ optional arguments:
   --numTrace NUMTRACE   number of traces to show in the heatmap
   --numOperation NUMOPERATION
                         number of operations to show in the heatmap
+  -we, --withErrors
+                        get critical path that only shows errors in the original critical path
+  -ee, --excludingErrors
+                        get critical path and exclude error containing nodes in identification. 
 ```
