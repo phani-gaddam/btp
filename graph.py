@@ -510,6 +510,10 @@ class Graph():
         
         if not curNode.errorFlag:
             curNode.duration = error_duration
+        
+        if error_duration == 0:
+            ind = criticalPath.index(curNode)
+            criticalPath = criticalPath[:ind]
         return criticalPath
     
     def computeCriticalPathExcludingErrors(self, curNode):
