@@ -109,6 +109,26 @@ argParser.add_argument('--numOperation',
                        default=100,
                        type=int)
 
+argParser.add_argument(
+    '-we',
+    '--WithErrors',
+    dest='WithErrors',
+    action='store_true',
+    default=False,
+    required=False,
+    help="witherrors help"
+)
+
+argParser.add_argument(
+    '-ee',
+    '--ExcludingErrors',
+    dest='ExcludingErrors',
+    action='store_true',
+    default=False,
+    required=False,
+    help="excluding errors help"
+)
+
 args = argParser.parse_args()
 operationName = args.operationName
 serviceName = args.serviceName
@@ -117,7 +137,23 @@ topN = args.topN
 numOperation = args.numOperation
 numTrace = args.numTrace
 rootTrace = args.rootTrace
+withErrors = args.WithErrors
+excludingErrors = args.ExcludingErrors
 anonymize = args.anonymize
+
+mode = None
+if withErrors is False and excludingErrors is False:
+    mode = 'normal'
+elif withErrors is True and excludingErrors is True:
+    print('please specify anyone , but not both')
+    exit(1)
+elif withErrors is True:
+    mode = 'withErrors'
+elif excludingErrors is True:
+    mode = 'excludingErrors'
+
+# print(f"--------------------{mode}---------------------------------")
+
 
 if args.file == None and args.traceDir == None:
     print("One of --inpiut/--file should be set.")
@@ -256,12 +292,24 @@ def process(filename):
         if graph.rootNode == None:
             return Metrics({}, {}, {}, {}, {}, {}, {}, 0, 0, 0)
 
-        res = graph.findCriticalPath()
+        res = None
+        if mode == 'normal':
+            res = graph.findCriticalPath()
+        elif mode == 'withErrors':
+            res = graph.findCriticalPathWithOnlyErrors()
+        elif mode == 'excludingErrors':
+            res = graph.findCriticalPathExcludingErrors()
+            if len(res) == 0:
+                print("every span contains errors")
+                print('cannot move forward, critical path is empty')
+                sys.exit()
+
         debug_on and logging.debug("critical path:" + str(res))
 
-        res1 = graph.findCriticalPathWithOnlyErrors()
+        metrics = graph.getMetrics(res)
+        # metrics1 = graph.getMetrics(res1)
+        # metrics2 = graph.getMetrics(res2)
 
-        metrics = graph.getMetrics(res1)
         # metrics = graph.getMetrics(res)
         debug_on and logging.debug(metrics.opTimeExclusive)
 
@@ -796,8 +844,19 @@ if __name__ == '__main__':
         traceToRootspanMap[traceID] = spanID
 
     logging.info("Starting flameGraph")
-    flameGraphPctFilePair, differentialFlameGraphFiles = flamegraph.flameGraph(
-        metrics, getOutputDir())
+    flameGraphPctFilePair, differentialFlameGraphFiles = None,None
+    if mode == 'normal':
+        flameGraphPctFilePair, differentialFlameGraphFiles = flamegraph.flameGraph(
+            metrics, getOutputDir())
+    elif mode == 'withErrors':
+        flameGraphPctFilePair, differentialFlameGraphFiles = flamegraph.flameGraphWithOnlyErrors(
+            metrics, getOutputDir())
+    elif mode == 'excludingErrors':
+        flameGraphPctFilePair, differentialFlameGraphFiles = flamegraph.flameGraphExcludingErrors(
+            metrics, getOutputDir())
+
+    # flameGraphPctFilePair, differentialFlameGraphFiles = flamegraph.flameGraph(
+        # metrics, getOutputDir())
 
     logging.info("Starting heatmapAndSummary")
     heatMap, summary, criticalPathJSONStr = heatmapAndSummary(exclusive, inclusive,

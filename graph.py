@@ -534,7 +534,8 @@ class Graph():
 
         # remove all error containing children
         sortedChildren = list(
-            filter(lambda ch: not ch.errorFlag, curNode.children))
+            filter(lambda ch: not ch.errorFlag, sortedChildren))
+
 
         if len(sortedChildren) == 0:
             debug_on and logging.debug(f"{curNode} has all error children")
@@ -551,7 +552,7 @@ class Graph():
                 debug_on and logging.debug(
                     f"Adding child {cn} {self.canonicalOpName(cn)} to CP")
                 # # step 4. recur on cn, which is on the critical path.
-                criticalPath.extend(self.computeCriticalPathWithOnlyErrors(cn))
+                criticalPath.extend(self.computeCriticalPathExcludingErrors(cn))
                 lrc = cn
                 lastStartTime = min(lastStartTime, cn.startTime)
             else:
