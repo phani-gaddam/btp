@@ -89,7 +89,9 @@ def flameGraphWithOnlyErrors(metrics, outputDir):
             logging.info(f"not enough samples for P" + str(p) + " flamegraph")
             continue
         flameGraph = aggregateCCTs(cctsAndtime[:limit])
-
+        if flameGraph == "":
+            logging.info(f"Empty graph for P" + str(p) + " flamegraph")
+            continue
         cctFile = 'flame-graph-with-only-errors-P' + str(p) + '.cct'
         flamegraphPath = os.path.join(outputDir, cctFile)
         with open(flamegraphPath, 'w') as f:
@@ -140,6 +142,10 @@ def flameGraphExcludingErrors(metrics, outputDir):
             logging.info(f"not enough samples for P" + str(p) + " flamegraph")
             continue
         flameGraph = aggregateCCTs(cctsAndtime[:limit])
+        if flameGraph == "":
+            logging.info(f"Empty graph for P" + str(p) + " flamegraph")
+            continue
+
 
         cctFile = 'flame-graph-excluding-errors-P' + str(p) + '.cct'
         flamegraphPath = os.path.join(outputDir, cctFile)

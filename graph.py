@@ -519,7 +519,6 @@ class Graph():
     def computeCriticalPathExcludingErrors(self, curNode):
         # Recursively find the critical path for curNode.
         if curNode.errorFlag:
-            print(f"--returning")
             return []
 
         debug_on and logging.debug(

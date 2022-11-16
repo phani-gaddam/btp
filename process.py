@@ -299,10 +299,6 @@ def process(filename):
             res = graph.findCriticalPathWithOnlyErrors()
         elif mode == 'excludingErrors':
             res = graph.findCriticalPathExcludingErrors()
-            if len(res) == 0:
-                print("every span contains errors")
-                print('cannot move forward, critical path is empty')
-                sys.exit()
 
         debug_on and logging.debug("critical path:" + str(res))
 
