@@ -158,7 +158,7 @@ class Graph():
         self.exclusiveExampleMap = {}
         self.inclusiveExampleMap = {}
         self.callChain = {}
-        self.errorNodes = []
+        # self.errorNodes = []
         potentialRoots = self.parseNode(data)
         if len(potentialRoots) == 0:
             logging.warning(f"no root node in file {filename}!")
@@ -196,7 +196,7 @@ class Graph():
 
         self.markErrorChildren()
 
-        self.setErrorNodes()
+        # self.setErrorNodes()
 
         if debug_on:
             logging.debug(f"{self.totalShrink} of duation compressed")
@@ -211,15 +211,16 @@ class Graph():
     def helper(self, curNode):
         res = False
         for child in curNode.children:
-            res = res or self.helper(child)
+            tmp = self.helper(child)
+            res = res or tmp
         curNode.hasErrorChild = res
         return res or curNode.errorFlag
 
-    def setErrorNodes(self):
-        for spanId in self.nodeHT:
-            me = self.nodeHT[spanId]
-            if me.errorFlag:
-                self.errorNodes.append(self.nodeHT[spanId])
+    # def setErrorNodes(self):
+    #     for spanId in self.nodeHT:
+    #         me = self.nodeHT[spanId]
+    #         if me.errorFlag:
+    #             self.errorNodes.append(self.nodeHT[spanId])
 
     def findARoot(self, node):
         # a DFS for finding the first node that matches the required service and operation name.
@@ -686,8 +687,8 @@ class Graph():
                        callpathTimeInclusive, inclusiveExampleMap, callChain,
                        self.rootNode.sid, descendants, depth)
 
-    def ps(self):
-        print(self.errorNodes)
+    # def ps(self):
+    #     print(self.errorNodes)
 
 
 def accumulateInDict(dictName, key, value):
@@ -736,12 +737,12 @@ class Metrics():
         self.depth = depth
 
 
-def showErrors(graph: Graph) -> None:
-    for k in graph.errorNodes:
-        now = k
-        while now:
-            # print(now)
-            print(now.sid, end=" -> ")
-            now = now.parent
+# def showErrors(graph: Graph) -> None:
+    # for k in graph.errorNodes:
+    #     now = k
+    #     while now:
+    #         # print(now)
+    #         print(now.sid, end=" -> ")
+    #         now = now.parent
 
-        print("None")
+    #     print("None")
