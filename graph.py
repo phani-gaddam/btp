@@ -136,7 +136,9 @@ class GraphNode():
         self.children[child] = True
 
     def __repr__(self):
-        return f'Node(SpanID={self.sid}, startTime={self.startTime}, duration={self.duration}, parent={self.parent}, opName={self.opName}, errorFlag={self.errorFlag}, hasErrorChild={self.hasErrorChild})'
+        return f'Node: SpanID = {self.sid},opName={self.opName}, errorFlag={self.errorFlag}, hasErrorChild={self.hasErrorChild},errorreturning={self.error_returning_childs},recovered = {self.recovered_errors_from_childs},propagated = {self.errors_propagated}\n'
+        # changed the representation for now
+        # return f'Node(SpanID={self.sid}, startTime={self.startTime}, duration={self.duration}, parent={self.parent}, opName={self.opName}, errorFlag={self.errorFlag}, hasErrorChild={self.hasErrorChild})'
 
 
 class Graph():
@@ -345,7 +347,7 @@ class Graph():
             children = me.children.keys()
 
             for child in children:
-                if child.hasError:
+                if child.errorFlag:
                     me.error_returning_childs += 1
 
             me.hasError = me.errorFlag 
@@ -354,6 +356,8 @@ class Graph():
                 me.errors_propagated = me.error_returning_childs
             else:
                 me.recovered_errors_from_childs = me.error_returning_childs
+
+            # print(me)
 
         
             
@@ -716,6 +720,8 @@ class Graph():
 
     # def ps(self):
     #     print(self.errorNodes)
+    def print_node(self,node):
+        print(node)
 
 
 def accumulateInDict(dictName, key, value):

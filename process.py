@@ -316,6 +316,8 @@ def process(filename):
         # artifically introduce the totalTime entry
         metrics.opTimeExclusive['totalTime'] = graph.rootNode.duration
         metrics.opTimeInclusive['totalTime'] = graph.rootNode.duration
+
+        graph.print_node(graph.rootNode)
         return metrics
 
 
