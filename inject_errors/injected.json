@@ -1,0 +1,435 @@
+{
+    "data": [
+        {
+            "processes": {
+                "S1": {
+                    "serviceName": "S1",
+                    "tags": []
+                },
+                "S2": {
+                    "serviceName": "S2",
+                    "tags": []
+                },
+                "S3": {
+                    "serviceName": "S3",
+                    "tags": []
+                },
+                "S4": {
+                    "serviceName": "S4",
+                    "tags": []
+                },
+                "S5": {
+                    "serviceName": "S5",
+                    "tags": []
+                },
+                "S7": {
+                    "serviceName": "S7",
+                    "tags": []
+                },
+                "S8": {
+                    "serviceName": "S8",
+                    "tags": []
+                },
+                "S9": {
+                    "serviceName": "S9",
+                    "tags": []
+                },
+                "S10": {
+                    "serviceName": "S10",
+                    "tags": []
+                },
+                "S11": {
+                    "serviceName": "S11",
+                    "tags": []
+                },
+                "S12": {
+                    "serviceName": "S12",
+                    "tags": []
+                },
+                "S13": {
+                    "serviceName": "S13",
+                    "tags": []
+                },
+                "S14": {
+                    "serviceName": "S14",
+                    "tags": []
+                },
+                "S15": {
+                    "serviceName": "S15",
+                    "tags": []
+                },
+                "S16": {
+                    "serviceName": "S16",
+                    "tags": []
+                },
+                "S17": {
+                    "serviceName": "S17",
+                    "tags": []
+                },
+                "S18": {
+                    "serviceName": "S18",
+                    "tags": []
+                },
+                "S19": {
+                    "serviceName": "S19",
+                    "tags": []
+                }
+            },
+            "traceID": "A",
+            "spans": [
+                {
+                    "traceID": "A",
+                    "spanID": "A",
+                    "operationName": "O1",
+                    "references": [],
+                    "startTime": 0,
+                    "duration": 200,
+                    "processID": "S1",
+                    "warnings": null,
+                    "tags": {
+                        "key": "error",
+                        "type": "bool",
+                        "value": "true"
+                    }
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "B",
+                    "operationName": "O2",
+                    "startTime": 10,
+                    "duration": 71,
+                    "processID": "S2",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "A"
+                        }
+                    ],
+                    "tags": {
+                        "key": "error",
+                        "type": "bool",
+                        "value": "true"
+                    }
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "C",
+                    "operationName": "O3",
+                    "startTime": 90,
+                    "duration": 70,
+                    "processID": "S3",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "A"
+                        }
+                    ],
+                    "tags": {
+                        "key": "error",
+                        "type": "bool",
+                        "value": "true"
+                    }
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "D",
+                    "operationName": "O4",
+                    "startTime": 15,
+                    "duration": 65,
+                    "processID": "S4",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "A"
+                        }
+                    ]
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "E",
+                    "operationName": "O5",
+                    "startTime": 20,
+                    "duration": 30,
+                    "processID": "S5",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "B"
+                        }
+                    ]
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "F",
+                    "operationName": "O6",
+                    "startTime": 21,
+                    "duration": 31,
+                    "processID": "S6",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "B"
+                        }
+                    ],
+                    "tags": {
+                        "key": "error",
+                        "type": "bool",
+                        "value": "true"
+                    }
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "G",
+                    "operationName": "O7",
+                    "startTime": 40,
+                    "duration": 10,
+                    "processID": "S7",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "B"
+                        }
+                    ],
+                    "tags": {
+                        "key": "error",
+                        "type": "bool",
+                        "value": "true"
+                    }
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "H",
+                    "operationName": "O8",
+                    "startTime": 41,
+                    "duration": 10,
+                    "processID": "S8",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "B"
+                        }
+                    ]
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "I",
+                    "operationName": "O9",
+                    "startTime": 42,
+                    "duration": 10,
+                    "processID": "S9",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "B"
+                        }
+                    ]
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "J",
+                    "operationName": "O10",
+                    "startTime": 60,
+                    "duration": 10,
+                    "processID": "S10",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "B"
+                        }
+                    ]
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "N",
+                    "operationName": "O14",
+                    "startTime": 100,
+                    "duration": 10,
+                    "processID": "S14",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "C"
+                        }
+                    ]
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "O",
+                    "operationName": "O15",
+                    "startTime": 101,
+                    "duration": 10,
+                    "processID": "S15",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "C"
+                        }
+                    ],
+                    "tags": {
+                        "key": "error",
+                        "type": "bool",
+                        "value": "true"
+                    }
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "P",
+                    "operationName": "O16",
+                    "startTime": 102,
+                    "duration": 10,
+                    "processID": "S16",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "C"
+                        }
+                    ]
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "Q",
+                    "operationName": "O17",
+                    "startTime": 103,
+                    "duration": 10,
+                    "processID": "S17",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "C"
+                        }
+                    ]
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "R",
+                    "operationName": "O18",
+                    "startTime": 120,
+                    "duration": 30,
+                    "processID": "S18",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "C"
+                        }
+                    ],
+                    "tags": {
+                        "key": "error",
+                        "type": "bool",
+                        "value": "true"
+                    }
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "S",
+                    "operationName": "O19",
+                    "startTime": 130,
+                    "duration": 10,
+                    "processID": "S19",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "R"
+                        }
+                    ]
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "K",
+                    "operationName": "O11",
+                    "startTime": 20,
+                    "duration": 5,
+                    "processID": "S11",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "D"
+                        }
+                    ],
+                    "tags": {
+                        "key": "error",
+                        "type": "bool",
+                        "value": "true"
+                    }
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "L",
+                    "operationName": "O12",
+                    "startTime": 30,
+                    "duration": 5,
+                    "processID": "S12",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "D"
+                        }
+                    ],
+                    "tags": {
+                        "key": "error",
+                        "type": "bool",
+                        "value": "true"
+                    }
+                },
+                {
+                    "traceID": "A",
+                    "spanID": "M",
+                    "operationName": "O13",
+                    "startTime": 40,
+                    "duration": 5,
+                    "processID": "S13",
+                    "warnings": null,
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "A",
+                            "spanID": "D"
+                        }
+                    ],
+                    "tags": {
+                        "key": "error",
+                        "type": "bool",
+                        "value": "true"
+                    }
+                }
+            ]
+        }
+    ],
+    "total": 0,
+    "limit": 0,
+    "offset": 0,
+    "errors": null
+}
