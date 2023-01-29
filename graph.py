@@ -123,6 +123,11 @@ class GraphNode():
         self.children = {}
         self.errorFlag = errFalg
         self.hasErrorChild = False
+        # new
+        self.error_returning_childs = 0
+        self.recovered_errors_from_childs = 0
+        self.errors_propagated = 0
+        self.hasError = False
 
     def setParent(self, parent):
         self.parent = parent
@@ -308,6 +313,9 @@ class Graph():
                     span[_OPERATION_NAME],
                     span[_PROCESS_ID],
                     hasError)
+                
+                # !new
+
                 # if hasError:
                 #     print(f"{thisSpan} contains error")
 
@@ -330,6 +338,25 @@ class Graph():
             parent = self.nodeHT[parentId]
             me.setParent(parent)
             parent.addChild(me)
+        
+        # !new
+        for spanId in self.nodeHT:
+            me = self.nodeHT[spanId]
+            children = me.children.keys()
+
+            for child in children:
+                if child.hasError:
+                    me.error_returning_childs += 1
+
+            me.hasError = me.errorFlag 
+            
+            if me.hasError:
+                me.errors_propagated = me.error_returning_childs
+            else:
+                me.recovered_errors_from_childs = me.error_returning_childs
+
+        
+            
 
         # pass 3: record service names and other KV data
         for item in jsonData['data']:
