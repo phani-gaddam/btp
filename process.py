@@ -317,8 +317,9 @@ def process(filename):
         metrics.opTimeExclusive['totalTime'] = graph.rootNode.duration
         metrics.opTimeInclusive['totalTime'] = graph.rootNode.duration
 
-        graph.print_node(graph.rootNode)
-        return metrics
+        # graph.print_node(graph.rootNode)
+        # return metrics
+        return graph.getMetricsNew()
 
 
 def mapReduce(numWorkers, jaegerTraceFiles):
@@ -327,6 +328,49 @@ def mapReduce(numWorkers, jaegerTraceFiles):
     metrics = None
     with Pool(numWorkers) as p:
         metrics = p.map(process, jaegerTraceFiles)
+    # if type(metrics) == lis
+    # print(metrics)
+    # for m in metrics:
+    #     for i in m:
+    #         print(i)
+    #     print("-------------------------------------------")
+    nodes = []
+    for nodelist in metrics:
+        nodes.extend(nodelist)
+    
+    d = {}
+    # key - [pid,opName]
+    # value = [err_child_count,recovery_count,passed_on,produced_itself]
+    for node in nodes:
+        key = [node.pid,node.opName]
+        if d.get(key) is not None:
+            if node.hasErrorChild == True and node.errorFlag == True:
+                value = d[key] 
+                value[0] += 1
+                value[1] += 0
+                value[2] += 1
+                value[3] += 0
+            if node.hasErrorChild == True and node.errorFlag == False:
+                value = d[key] 
+                value[0] += 1
+                value[1] += 1
+                value[2] += 0
+                value[3] += 0
+            if node.hasErrorChild == False and node.errorFlag == True:
+                value = d[key] 
+                value[0] += 0
+                value[1] += 0
+                value[2] += 0
+                value[3] += 1
+            if node.hasErrorChild == False and node.errorFlag == False:
+                value = d[key] 
+                value[0] += 0
+                value[1] += 0
+                value[2] += 0
+                value[3] += 0
+        else:
+            d[key] = [0,0,0,0]
+
     return metrics
 
 
@@ -816,6 +860,7 @@ def sanitizeNames(metric):
 if __name__ == '__main__':
     logging.info("Starting mapReduce")
     metrics = mapReduce(args.parallelism, jaegerTraceFiles)
+    exit(-1)
 
     maxNodes = 0
     totalNodes = 0

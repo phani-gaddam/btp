@@ -124,10 +124,10 @@ class GraphNode():
         self.errorFlag = errFalg
         self.hasErrorChild = False
         # new
-        self.error_returning_childs = 0
-        self.recovered_errors_from_childs = 0
-        self.errors_propagated = 0
-        self.hasError = False
+        # self.error_returning_childs = 0
+        # self.recovered_errors_from_childs = 0
+        # self.errors_propagated = 0
+        # self.hasError = False
 
     def setParent(self, parent):
         self.parent = parent
@@ -136,9 +136,9 @@ class GraphNode():
         self.children[child] = True
 
     def __repr__(self):
-        return f'Node: SpanID = {self.sid},opName={self.opName}, errorFlag={self.errorFlag}, hasErrorChild={self.hasErrorChild},errorreturning={self.error_returning_childs},recovered = {self.recovered_errors_from_childs},propagated = {self.errors_propagated}\n'
+        return f'Node:pid = {self.pid} SpanID = {self.sid},opName={self.opName}, errorFlag={self.errorFlag}, hasErrorChild={self.hasErrorChild}\n'
         # changed the representation for now
-        # return f'Node(SpanID={self.sid}, startTime={self.startTime}, duration={self.duration}, parent={self.parent}, opName={self.opName}, errorFlag={self.errorFlag}, hasErrorChild={self.hasErrorChild})'
+        return f'Node(SpanID={self.sid}, startTime={self.startTime}, duration={self.duration}, parent={self.parent}, opName={self.opName}, errorFlag={self.errorFlag}, hasErrorChild={self.hasErrorChild})'
 
 
 class Graph():
@@ -342,22 +342,22 @@ class Graph():
             parent.addChild(me)
         
         # !new
-        for spanId in self.nodeHT:
-            me = self.nodeHT[spanId]
-            children = me.children.keys()
+        # for spanId in self.nodeHT:
+        #     me = self.nodeHT[spanId]
+        #     children = me.children.keys()
 
-            for child in children:
-                if child.errorFlag:
-                    me.error_returning_childs += 1
+        #     for child in children:
+        #         if child.errorFlag:
+        #             me.error_returning_childs += 1
 
-            me.hasError = me.errorFlag 
+        #     me.hasError = me.errorFlag 
             
-            if me.hasError:
-                me.errors_propagated = me.error_returning_childs
-            else:
-                me.recovered_errors_from_childs = me.error_returning_childs
+        #     if me.hasError:
+        #         me.errors_propagated = me.error_returning_childs
+        #     else:
+        #         me.recovered_errors_from_childs = me.error_returning_childs
 
-            # print(me)
+        #     # print(me)
 
         
             
@@ -718,6 +718,17 @@ class Graph():
                        callpathTimeInclusive, inclusiveExampleMap, callChain,
                        self.rootNode.sid, descendants, depth)
 
+    def getMetricsNew(self) -> list[GraphNode]:
+        root = self.rootNode
+        allNodes = [root]
+        children = list(root.children.keys()) 
+        while len(children) != 0:
+            now = children.pop(0)
+            allNodes.append(now)
+            children.extend(list(now.children.keys()))
+        
+        return allNodes
+        
     # def ps(self):
     #     print(self.errorNodes)
     def print_node(self,node):
