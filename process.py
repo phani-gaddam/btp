@@ -284,7 +284,7 @@ document.querySelectorAll(".table-sortable th").forEach(headerCell => {
 '''
 
 
-def process(filename):
+def  process(filename):
     # process one Jaeger JSON trace file
     with open(os.path.join(filename), 'r') as f:
         data = json.load(f)
@@ -342,7 +342,7 @@ def mapReduce(numWorkers, jaegerTraceFiles):
     # key - [pid,opName]
     # value = [err_child_count,recovery_count,passed_on,produced_itself]
     for node in nodes:
-        key = [node.pid,node.opName]
+        key = (node.pid,node.opName)
         if d.get(key) is not None:
             if node.hasErrorChild == True and node.errorFlag == True:
                 value = d[key] 
@@ -370,6 +370,13 @@ def mapReduce(numWorkers, jaegerTraceFiles):
                 value[3] += 0
         else:
             d[key] = [0,0,0,0]
+
+
+    sorted_d = dict(sorted(d.items(), key = lambda x:x[1],reverse=True))
+
+    with open('./out/dict.txt', 'w') as f:
+        for key, value in sorted_d.items(): 
+            f.write('%s:%s\n' % (key, value))
 
     return metrics
 

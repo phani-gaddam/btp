@@ -34,7 +34,7 @@ for span in data['data'][0]['spans']:
         # check if there are error tags
         for tag in span.get('tags'):
             # has error = true
-            if tag.get('key') is not None and tag.get('type') is not None and tag.get('value') is not None and tag.get('value') == 'true':
+            if tag.get('key') == 'error' and tag.get('type') == 'bool' and tag.get('value') == 'true':
                 # print(span)
                 pass
             else:
