@@ -372,11 +372,11 @@ def mapReduce(numWorkers, jaegerTraceFiles):
             d[key] = [0,0,0,0]
 
 
-    sorted_d = dict(sorted(d.items(), key = lambda x:x[1],reverse=True))
+    sorted_d = dict(sorted(d.items(), key = lambda x:x[1][0],reverse=True))
 
     with open('./out/dict.txt', 'w') as f:
         for key, value in sorted_d.items(): 
-            f.write('%s:%s\n' % (key, value))
+            f.write('%s:%s\n' % (f'{key[0]} {key[1]}', f'{value[0]} {value[1]} {value[2]} {value[3]}'))
 
     return metrics
 
