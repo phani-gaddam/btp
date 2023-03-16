@@ -347,7 +347,7 @@ def mapReduce(numWorkers, jaegerTraceFiles):
     # key - [pid,opName]
     # value = [err_child_count,recovery_count,passed_on,produced_itself]
     for node in nodes:
-        key = (node.pid,node.opName)
+        key = (node.serviceName,node.opName)
         if d.get(key) is not None:
             if node.hasErrorChild == True and node.errorFlag == True:
                 value = d[key] 

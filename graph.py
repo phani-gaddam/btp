@@ -720,14 +720,25 @@ class Graph():
                        self.rootNode.sid, descendants, depth)
 
     def getMetricsNew(self) -> list[GraphNode]:
-        root = self.rootNode
-        allNodes = [root]
+        root:GraphNode = self.rootNode
+        # allNodes = [root]
+        # children = list(root.children.keys()) 
+        # while len(children) != 0:
+        #     now = children.pop(0)
+        #     allNodes.append(now)
+        #     children.extend(list(now.children.keys()))
+        
+        # return allNodes
+        # pair = [self.processName['']]
+        servname = self.processName[root.pid]
+        allNodes = [NewMetricsNode(servname,root.opName,root.errorFlag,root.hasErrorChild)]
         children = list(root.children.keys()) 
         while len(children) != 0:
             now = children.pop(0)
-            allNodes.append(now)
+            servname = self.processName[now.pid]
+            allNodes.append(NewMetricsNode(servname,now.opName,now.errorFlag,now.hasErrorChild))
             children.extend(list(now.children.keys()))
-        
+
         return allNodes
     
     def assignLevels(self):
@@ -794,6 +805,15 @@ class Metrics():
         self.rootSpanID = rootSpanID
         self.numNodes = descendants
         self.depth = depth
+
+class NewMetricsNode:
+    def __init__(self,serviceName,opName,errorFlag,hasErrorChild):
+        self.serviceName = serviceName
+        self.opName = opName
+        self.errorFlag = errorFlag
+        self.hasErrorChild = hasErrorChild
+    
+
 
 
 # def showErrors(graph: Graph) -> None:
