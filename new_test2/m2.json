@@ -36,8 +36,8 @@
                 },
                 {
                     "traceID": "A",
-                    "spanID": "E",
-                    "operationName": "O2",
+                    "spanID": "D",
+                    "operationName": "O5",
                     "startTime": 10,
                     "duration": 50,
                     "processID": "S2",
@@ -59,40 +59,17 @@
                 },
                 {
                     "traceID": "A",
-                    "spanID": "F",
-                    "operationName": "O3",
-                    "startTime": 20,
-                    "duration": 10,
-                    "processID": "S3",
+                    "spanID": "C",
+                    "operationName": "O2",
+                    "startTime": 10,
+                    "duration": 50,
+                    "processID": "S2",
                     "warnings": null,
                     "references": [
                         {
                             "refType": "CHILD_OF",
                             "traceID": "A",
-                            "spanID": "A"
-                        }
-                    ],
-                    "tags": [
-                        {
-                            "key": "error",
-                            "type": "bool",
-                            "value": "true"
-                        }
-                    ]
-                },
-                {
-                    "traceID": "A",
-                    "spanID": "B",
-                    "operationName": "O3",
-                    "startTime": 20,
-                    "duration": 10,
-                    "processID": "S3",
-                    "warnings": null,
-                    "references": [
-                        {
-                            "refType": "CHILD_OF",
-                            "traceID": "A",
-                            "spanID": "E"
+                            "spanID": "D"
                         }
                     ],
                     "tags": [
@@ -103,6 +80,7 @@
                         }
                     ]
                 }
+                
                 
             ]
         }
