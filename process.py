@@ -12,6 +12,7 @@ import glob
 import os
 from multiprocessing import Pool, Value
 from graph import *
+from merge import *
 import argparse
 import re
 import pandas as pd
@@ -20,6 +21,7 @@ from datetime import datetime
 import logging
 import subprocess
 import flamegraph
+
 
 DATE_TIME = datetime.now().strftime("%d_%B_%Y_%H_%M_%S")
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
@@ -291,6 +293,9 @@ def  process(filename):
         graph = Graph(data, serviceName, operationName, filename, rootTrace)
         graph.assignLevels()
         
+
+        return graph
+
         # to draw the bar graphs for visualization
         return graph.getMetricsNew()
 
@@ -334,6 +339,8 @@ def mapReduce(numWorkers, jaegerTraceFiles):
     metrics = None
     with Pool(numWorkers) as p:
         metrics = p.map(process, jaegerTraceFiles)
+
+    return metrics
     # if type(metrics) == lis
     # print(metrics)
     # for m in metrics:
@@ -384,7 +391,7 @@ def mapReduce(numWorkers, jaegerTraceFiles):
         for key, value in sorted_d.items(): 
             f.write('%s:%s\n' % (f'{key[0]} {key[1]}', f'{value[0]} {value[1]} {value[2]} {value[3]}'))
 
-    return metrics
+    
 
 
 class SummaryResult:
@@ -873,7 +880,8 @@ def sanitizeNames(metric):
 if __name__ == '__main__':
     logging.info("Starting mapReduce")
     metrics = mapReduce(args.parallelism, jaegerTraceFiles)
-    exit(-1)
+    merge_graphs(metrics)
+    exit(0)
 
     maxNodes = 0
     totalNodes = 0
