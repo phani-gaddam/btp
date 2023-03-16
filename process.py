@@ -289,6 +289,11 @@ def  process(filename):
     with open(os.path.join(filename), 'r') as f:
         data = json.load(f)
         graph = Graph(data, serviceName, operationName, filename, rootTrace)
+        graph.assignLevels()
+        for node in graph.nodeHT.keys():
+            node = graph.nodeHT[node]
+            print(f"{node.sid} - {node.level}")
+        exit(1)
         if graph.rootNode == None:
             return Metrics({}, {}, {}, {}, {}, {}, {}, 0, 0, 0)
 

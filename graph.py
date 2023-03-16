@@ -128,6 +128,7 @@ class GraphNode():
         # self.recovered_errors_from_childs = 0
         # self.errors_propagated = 0
         # self.hasError = False
+        self.level = None
 
     def setParent(self, parent):
         self.parent = parent
@@ -728,6 +729,20 @@ class Graph():
             children.extend(list(now.children.keys()))
         
         return allNodes
+    
+    def assignLevels(self):
+        def helper(node):
+            children = list(node.children.keys())
+            for child in children:
+                child.level = node.level + 1
+                helper(child)
+        
+
+        rootNode = self.rootNode
+        rootNode.level = 1
+        helper(rootNode)
+
+
         
     # def ps(self):
     #     print(self.errorNodes)
