@@ -291,11 +291,9 @@ def  process(filename):
         graph = Graph(data, serviceName, operationName, filename, rootTrace)
         graph.assignLevels()
         
+        # to draw the bar graphs for visualization
         return graph.getMetricsNew()
-        # for node in graph.nodeHT.keys():
-        #     node = graph.nodeHT[node]
-        #     print(f"{node.sid} - {node.level}")
-        # exit(1)
+
 
         if graph.rootNode == None:
             return Metrics({}, {}, {}, {}, {}, {}, {}, 0, 0, 0)
