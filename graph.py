@@ -750,7 +750,7 @@ class Graph():
         
 
         rootNode = self.rootNode
-        rootNode.level = 1
+        rootNode.level = 0
         helper(rootNode)
 
 

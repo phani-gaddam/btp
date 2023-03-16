@@ -290,10 +290,13 @@ def  process(filename):
         data = json.load(f)
         graph = Graph(data, serviceName, operationName, filename, rootTrace)
         graph.assignLevels()
-        for node in graph.nodeHT.keys():
-            node = graph.nodeHT[node]
-            print(f"{node.sid} - {node.level}")
-        exit(1)
+        
+        return graph.getMetricsNew()
+        # for node in graph.nodeHT.keys():
+        #     node = graph.nodeHT[node]
+        #     print(f"{node.sid} - {node.level}")
+        # exit(1)
+
         if graph.rootNode == None:
             return Metrics({}, {}, {}, {}, {}, {}, {}, 0, 0, 0)
 
@@ -323,8 +326,8 @@ def  process(filename):
         metrics.opTimeInclusive['totalTime'] = graph.rootNode.duration
 
         # graph.print_node(graph.rootNode)
-        # return metrics
-        return graph.getMetricsNew()
+        return metrics
+        
 
 
 def mapReduce(numWorkers, jaegerTraceFiles):
