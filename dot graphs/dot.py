@@ -8,13 +8,15 @@ g = graphviz.Digraph('G', filename='dot.gv')
 
 # path = r"/home/rohith/code/btp/test_cases/demo.json"
 
-path = r"/home/rohith/code/btp/1ktrace/f1.json"
+# path = r"/home/rohith/code/btp/1ktrace/f1.json"
+
+path = r"/home/rohith/code/btp/new_test/2.json"
 
 data = json.load(open(path))
 
-# serviceName, operationName, filename, rootTrace = "S1", "O1", "1.json", "A"
+serviceName, operationName, filename, rootTrace = "S1", "O1", "1.json", "A"
 
-serviceName, operationName, filename, rootTrace = "Service43", "Operation159", "f1.json", "A"
+# serviceName, operationName, filename, rootTrace = "Service43", "Operation159", "f1.json", "A"
 
 graph = graph.Graph(data, serviceName, operationName, filename, rootTrace)
 
@@ -35,7 +37,9 @@ helper(rootnode)
 
 # g.view()
 
-subprocess.run(["dot", "-T", "pdf" , "dot.gv" ,"-o", "dot.pdf"])
-subprocess.run(["dot", "-T", "png" , "dot.gv" ,"-o", "dot.png"])
+subprocess.run(["dot", "-T", "pdf" , "./dot.gv" ,"-o", "./dot.pdf"])
+subprocess.run(["dot", "-T", "png" , "./dot.gv" ,"-o", "./dot.png"])
+subprocess.run(["dot", "-Tsvg", "png" , "./dot.gv" ,"-o", "./dot.svg"])
+# dot -Tsvg graph.dot -o file
 g.save()
 

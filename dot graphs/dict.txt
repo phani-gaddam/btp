@@ -1,0 +1,16 @@
+S1 O1 A:0 0 0 0 {Node:pid = S2 SpanID = B,opName=O2, errorFlag=True, hasErrorChild=True
+: 1, Node:pid = S3 SpanID = C,opName=O3, errorFlag=True, hasErrorChild=True
+: 1}
+S2 O2 B:0 0 0 0 {Node:pid = S4 SpanID = D,opName=O4, errorFlag=True, hasErrorChild=False
+: 1, Node:pid = S5 SpanID = E,opName=O5, errorFlag=True, hasErrorChild=True
+: 1}
+S4 O4 D:0 0 0 0 {}
+S5 O5 E:0 0 0 0 {Node:pid = S6 SpanID = F,opName=O6, errorFlag=True, hasErrorChild=False
+: 1}
+S6 O6 F:0 0 0 0 {}
+S3 O3 C:0 0 0 0 {Node:pid = S7 SpanID = G,opName=O7, errorFlag=True, hasErrorChild=True
+: 1}
+S7 O7 G:0 0 0 0 {Node:pid = S8 SpanID = H,opName=O8, errorFlag=True, hasErrorChild=False
+: 1}
+S8 O8 H:0 0 0 0 {}
+

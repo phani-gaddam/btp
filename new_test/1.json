@@ -13,6 +13,30 @@
                 "S3": {
                     "serviceName": "S3",
                     "tags": []
+                },
+                "S4": {
+                    "serviceName": "S4",
+                    "tags": []
+                },
+                "S5": {
+                    "serviceName": "S5",
+                    "tags": []
+                },
+                "S6": {
+                    "serviceName": "S6",
+                    "tags": []
+                },
+                "S7": {
+                    "serviceName": "S7",
+                    "tags": []
+                },
+                "S8": {
+                    "serviceName": "S8",
+                    "tags": []
+                },
+                "S9": {
+                    "serviceName": "S9",
+                    "tags": []
                 }
             },
             "traceID": "A",
@@ -83,10 +107,10 @@
                 {
                     "traceID": "A",
                     "spanID": "D",
-                    "operationName": "O2",
+                    "operationName": "O4",
                     "startTime": 10,
                     "duration": 50,
-                    "processID": "S2",
+                    "processID": "S4",
                     "warnings": null,
                     "references": [
                         {
@@ -106,10 +130,10 @@
                 {
                     "traceID": "A",
                     "spanID": "E",
-                    "operationName": "O2",
+                    "operationName": "O5",
                     "startTime": 10,
                     "duration": 50,
-                    "processID": "S2",
+                    "processID": "S5",
                     "warnings": null,
                     "references": [
                         {
@@ -129,10 +153,10 @@
                 {
                     "traceID": "A",
                     "spanID": "F",
-                    "operationName": "O2",
+                    "operationName": "O6",
                     "startTime": 10,
                     "duration": 50,
-                    "processID": "S2",
+                    "processID": "S6",
                     "warnings": null,
                     "references": [
                         {
@@ -152,10 +176,10 @@
                 {
                     "traceID": "A",
                     "spanID": "G",
-                    "operationName": "O2",
+                    "operationName": "O7",
                     "startTime": 10,
                     "duration": 50,
-                    "processID": "S2",
+                    "processID": "S7",
                     "warnings": null,
                     "references": [
                         {
@@ -175,10 +199,10 @@
                 {
                     "traceID": "A",
                     "spanID": "H",
-                    "operationName": "O2",
+                    "operationName": "O8",
                     "startTime": 10,
                     "duration": 50,
-                    "processID": "S2",
+                    "processID": "S8",
                     "warnings": null,
                     "references": [
                         {

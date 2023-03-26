@@ -200,7 +200,7 @@ class Graph():
                 )
                 return
 
-        self.sanitizeOverflowingChildren(self.rootNode)
+        # self.sanitizeOverflowingChildren(self.rootNode)
 
         self.markErrorChildren()
 
