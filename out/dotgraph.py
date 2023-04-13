@@ -15,7 +15,7 @@ for k,v in data.items():
 
 for k,v in data.items():
     for n,val in v[4].items():
-        g.edge(k,n,weight=str(val),penwidth=str(val),label=str(val))
+        g.edge(n,k,weight=str(val),label=str(val))
 
 
 
