@@ -122,6 +122,7 @@ class GraphNode():
         self.pid = processID
         self.children = {}
         self.errorFlag = errFalg
+        self.hasErrorChildBranch = False
         self.hasErrorChild = False
         # new
         # self.error_returning_childs = 0
@@ -204,6 +205,9 @@ class Graph():
 
         self.markErrorChildren()
 
+        self.mark_child_errors(self.rootNode)
+
+
         # self.setErrorNodes()
 
         if debug_on:
@@ -211,6 +215,13 @@ class Graph():
             logging.debug(f"{self.shrinkCounter} spans shrank")
             logging.debug(f"{self.totalDrop} spans dropped")
             logging.debug(f"total executionTime {self.rootNode.duration}")
+
+    def mark_child_errors(self,node:GraphNode):
+        res = False
+        for child in node.children:
+            res = res or child.errorFlag
+            self.mark_child_errors(child)
+        node.hasErrorChild = res
 
     def markErrorChildren(self):
         curNode = self.rootNode
@@ -221,7 +232,7 @@ class Graph():
         for child in curNode.children:
             tmp = self.helper(child)
             res = res or tmp
-        curNode.hasErrorChild = res
+        curNode.hasErrorChildBranch = res
         return res or curNode.errorFlag
 
     # def setErrorNodes(self):
@@ -498,7 +509,7 @@ class Graph():
 
     def computeCriticalPathWithOnlyErrors(self, curNode):
         # Recursively find the critical path for curNode.
-        if not (curNode.errorFlag or curNode.hasErrorChild):
+        if not (curNode.errorFlag or curNode.hasErrorChildBranch):
             return []
 
         debug_on and logging.debug(
@@ -731,12 +742,12 @@ class Graph():
         # return allNodes
         # pair = [self.processName['']]
         servname = self.processName[root.pid]
-        allNodes = [NewMetricsNode(servname,root.opName,root.errorFlag,root.hasErrorChild)]
+        allNodes = [NewMetricsNode(servname,root.opName,root.errorFlag,root.hasErrorChildBranch)]
         children = list(root.children.keys()) 
         while len(children) != 0:
             now = children.pop(0)
             servname = self.processName[now.pid]
-            allNodes.append(NewMetricsNode(servname,now.opName,now.errorFlag,now.hasErrorChild))
+            allNodes.append(NewMetricsNode(servname,now.opName,now.errorFlag,now.hasErrorChildBranch))
             children.extend(list(now.children.keys()))
 
         return allNodes
