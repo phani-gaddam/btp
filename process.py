@@ -340,58 +340,117 @@ def mapReduce(numWorkers, jaegerTraceFiles):
     with Pool(numWorkers) as p:
         metrics = p.map(process, jaegerTraceFiles)
 
-    return metrics
+    # return metrics
     # if type(metrics) == lis
     # print(metrics)
     # for m in metrics:
     #     for i in m:
     #         print(i)
     #     print("-------------------------------------------")
-    nodes = []
-    for nodelist in metrics:
-        nodes.extend(nodelist)
-    
-    d = {}
-    # key - [pid,opName]
-    # value = [err_child_count,recovery_count,passed_on,produced_itself]
-    for node in nodes:
-        key = (node.serviceName,node.opName)
-        if d.get(key) is not None:
-            if node.hasErrorChild == True and node.errorFlag == True:
-                value = d[key] 
-                value[0] += 1
-                value[1] += 0
-                value[2] += 1
-                value[3] += 0
-            if node.hasErrorChild == True and node.errorFlag == False:
-                value = d[key] 
-                value[0] += 1
-                value[1] += 1
-                value[2] += 0
-                value[3] += 0
-            if node.hasErrorChild == False and node.errorFlag == True:
-                value = d[key] 
-                value[0] += 0
-                value[1] += 0
-                value[2] += 0
-                value[3] += 1
-            if node.hasErrorChild == False and node.errorFlag == False:
-                value = d[key] 
-                value[0] += 0
-                value[1] += 0
-                value[2] += 0
-                value[3] += 0
-        else:
-            d[key] = [0,0,0,0]
-
+    # nodes = []
+    for trace in metrics:
+        # nodes.extend(nodelist.nodeHT)
+        rootNode:GraphNode = trace.rootNode
+        d = {}
+        helper(rootNode,d,trace)
 
     sorted_d = dict(sorted(d.items(), key = lambda x:x[1][0],reverse=True))
 
-    with open('./out/dict.txt', 'w') as f:
+    with open('./out/dict.txt', 'w+') as f:
         for key, value in sorted_d.items(): 
-            f.write('%s:%s\n' % (f'{key[0]} {key[1]}', f'{value[0]} {value[1]} {value[2]} {value[3]}'))
+            f.write('%s:%s\n' % (f'{key[0]} {key[1]}', f'{value[0]} {value[1]} {value[2]} {value[3]} {value[4]}'))
 
+    # d = {}
+    # # key - [pid,opName]
+    # # value = [err_child_count,recovery_count,passed_on,produced_itself]
+    # for node in nodes:
+    #     key = (node.serviceName,node.opName)
+    #     if d.get(key) is not None:
+    #         if node.hasErrorChild == True and node.errorFlag == True:
+    #             value = d[key] 
+    #             value[0] += 1
+    #             value[1] += 0
+    #             value[2] += 1
+    #             value[3] += 0
+    #         if node.hasErrorChild == True and node.errorFlag == False:
+    #             value = d[key] 
+    #             value[0] += 1
+    #             value[1] += 1
+    #             value[2] += 0
+    #             value[3] += 0
+    #         if node.hasErrorChild == False and node.errorFlag == True:
+    #             value = d[key] 
+    #             value[0] += 0
+    #             value[1] += 0
+    #             value[2] += 0
+    #             value[3] += 1
+    #         if node.hasErrorChild == False and node.errorFlag == False:
+    #             value = d[key] 
+    #             value[0] += 0
+    #             value[1] += 0
+    #             value[2] += 0
+    #             value[3] += 0
+    #     else:
+    #         d[key] = [0,0,0,0]
+
+
+    # sorted_d = dict(sorted(d.items(), key = lambda x:x[1][0],reverse=True))
+
+    # with open('./out/dict.txt', 'w') as f:
+    #     for key, value in sorted_d.items(): 
+    #         f.write('%s:%s\n' % (f'{key[0]} {key[1]}', f'{value[0]} {value[1]} {value[2]} {value[3]}'))
+
+def getChildrenErrorDict(node:GraphNode,trace:Graph):
+    di = {}
+    for child in node.children.keys():
+        serviceName = trace.processName[child.pid]
+        key = (serviceName,child.opName)
+        if child.errorFlag == True:
+            di[key] += 1
+        else:
+            di[key] += 0
+    return di
     
+def helper(node:GraphNode,d,trace:Graph):
+    children = node.children.keys()
+    # serviceName = self.processName[root.pid]
+    serviceName = trace.processName[node.pid]
+    key = (serviceName,node.opName)
+    if d.get(key) is None:
+        d[key] = [0,0,0,0,{}]
+    if node.hasErrorChild == True and node.errorFlag == True:
+        value = d[key] 
+        value[0] += 1
+        value[1] += 0
+        value[2] += 1
+        value[3] += 0
+    if node.hasErrorChild == True and node.errorFlag == False:
+        value = d[key] 
+        value[0] += 1
+        value[1] += 1
+        value[2] += 0
+        value[3] += 0
+    if node.hasErrorChild == False and node.errorFlag == True:
+        value = d[key] 
+        value[0] += 0
+        value[1] += 0
+        value[2] += 0
+        value[3] += 1
+    if node.hasErrorChild == False and node.errorFlag == False:
+        value = d[key] 
+        value[0] += 0
+        value[1] += 0
+        value[2] += 0
+        value[3] += 0
+    
+    d[key][4] = getChildrenErrorDict(node,trace)
+
+    for node in children:
+        helper(node,d,trace)
+
+
+
+
 
 
 class SummaryResult:
@@ -880,7 +939,7 @@ def sanitizeNames(metric):
 if __name__ == '__main__':
     logging.info("Starting mapReduce")
     metrics = mapReduce(args.parallelism, jaegerTraceFiles)
-    merge_graphs(metrics)
+    # merge_graphs(metrics)
     exit(0)
 
     maxNodes = 0

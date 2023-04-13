@@ -14,7 +14,7 @@ names = []
 pairs = {}
 for pair in data:
     pair = pair.split(':')
-    values = list(map(int,pair[1].split()))
+    values = list(map(int,pair[1].split()[0:4]))
     key = tuple(pair[0].split())
     pairs[key] = values
     recovered = values[1]
