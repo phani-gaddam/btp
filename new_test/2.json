@@ -39,15 +39,15 @@
                     "tags": []
                 }
             },
-            "traceID": "A",
+            "traceID": "TB",
             "spans": [
                 {
-                    "traceID": "A",
+                    "traceID": "TB",
                     "spanID": "A",
                     "operationName": "O1",
                     "references": [],
                     "startTime": 0,
-                    "duration": 100,
+                    "duration": 1000,
                     "processID": "S1",
                     "warnings": null,
                     "tags": [
@@ -59,17 +59,17 @@
                     ]
                 },
                 {
-                    "traceID": "A",
+                    "traceID": "TB",
                     "spanID": "B",
                     "operationName": "O2",
-                    "startTime": 10,
-                    "duration": 50,
+                    "startTime": 11,
+                    "duration": 400,
                     "processID": "S2",
                     "warnings": null,
                     "references": [
                         {
                             "refType": "CHILD_OF",
-                            "traceID": "A",
+                            "traceID": "TB",
                             "spanID": "A"
                         }
                     ],
@@ -82,17 +82,17 @@
                     ]
                 },
                 {
-                    "traceID": "A",
+                    "traceID": "TB",
                     "spanID": "C",
                     "operationName": "O3",
-                    "startTime": 20,
-                    "duration": 10,
+                    "startTime": 500,
+                    "duration": 400,
                     "processID": "S3",
                     "warnings": null,
                     "references": [
                         {
                             "refType": "CHILD_OF",
-                            "traceID": "A",
+                            "traceID": "TB",
                             "spanID": "A"
                         }
                     ],
@@ -105,17 +105,17 @@
                     ]
                 },
                 {
-                    "traceID": "A",
+                    "traceID": "TB",
                     "spanID": "D",
                     "operationName": "O4",
-                    "startTime": 10,
-                    "duration": 50,
+                    "startTime": 30,
+                    "duration": 100,
                     "processID": "S4",
                     "warnings": null,
                     "references": [
                         {
                             "refType": "CHILD_OF",
-                            "traceID": "A",
+                            "traceID": "TB",
                             "spanID": "B"
                         }
                     ],
@@ -128,17 +128,17 @@
                     ]
                 },
                 {
-                    "traceID": "A",
+                    "traceID": "TB",
                     "spanID": "E",
                     "operationName": "O5",
-                    "startTime": 10,
-                    "duration": 50,
+                    "startTime": 200,
+                    "duration": 100,
                     "processID": "S5",
                     "warnings": null,
                     "references": [
                         {
                             "refType": "CHILD_OF",
-                            "traceID": "A",
+                            "traceID": "TB",
                             "spanID": "B"
                         }
                     ],
@@ -151,17 +151,17 @@
                     ]
                 },
                 {
-                    "traceID": "A",
+                    "traceID": "TB",
                     "spanID": "F",
                     "operationName": "O6",
-                    "startTime": 10,
-                    "duration": 50,
+                    "startTime": 250,
+                    "duration": 30,
                     "processID": "S6",
                     "warnings": null,
                     "references": [
                         {
                             "refType": "CHILD_OF",
-                            "traceID": "A",
+                            "traceID": "TB",
                             "spanID": "E"
                         }
                     ],
@@ -174,17 +174,17 @@
                     ]
                 },
                 {
-                    "traceID": "A",
-                    "spanID": "B",
+                    "traceID": "TB",
+                    "spanID": "BA",
                     "operationName": "O2",
-                    "startTime": 10,
-                    "duration": 50,
+                    "startTime": 600,
+                    "duration": 100,
                     "processID": "S2",
                     "warnings": null,
                     "references": [
                         {
                             "refType": "CHILD_OF",
-                            "traceID": "A",
+                            "traceID": "TB",
                             "spanID": "C"
                         }
                     ],

@@ -47,7 +47,7 @@
                     "operationName": "O1",
                     "references": [],
                     "startTime": 0,
-                    "duration": 100,
+                    "duration": 1000,
                     "processID": "S1",
                     "warnings": null,
                     "tags": [
@@ -62,8 +62,8 @@
                     "traceID": "A",
                     "spanID": "E",
                     "operationName": "O5",
-                    "startTime": 10,
-                    "duration": 50,
+                    "startTime": 11,
+                    "duration": 450,
                     "processID": "S5",
                     "warnings": null,
                     "references": [
@@ -85,8 +85,8 @@
                     "traceID": "A",
                     "spanID": "F",
                     "operationName": "O6",
-                    "startTime": 20,
-                    "duration": 10,
+                    "startTime": 600,
+                    "duration": 100,
                     "processID": "S6",
                     "warnings": null,
                     "references": [
@@ -108,8 +108,8 @@
                     "traceID": "A",
                     "spanID": "B",
                     "operationName": "O2",
-                    "startTime": 20,
-                    "duration": 10,
+                    "startTime": 200,
+                    "duration": 50,
                     "processID": "S2",
                     "warnings": null,
                     "references": [
