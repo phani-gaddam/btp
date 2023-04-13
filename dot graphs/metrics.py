@@ -26,6 +26,7 @@ def getChildrenErrorDict(node:GraphNode):
     for child in node.children.keys():
         serviceName = graph.processName[child.pid]
         key = (serviceName,child.opName)
+        key = str((serviceName,child.opName))
         if child.errorFlag == True:
             di[key] = 1
         else:
@@ -75,10 +76,15 @@ d = {}
 helper(rootNode,d)
 
 sorted_d = dict(sorted(d.items(), key = lambda x:x[1][0],reverse=True))
+sorted_d = {str(k):v for k,v in sorted_d.items()}
 
 with open('./dict.txt', 'w+') as f:
     for key, value in sorted_d.items(): 
-        f.write('%s:%s\n' % (f'{key[0]} {key[1]}', f'{value[0]} {value[1]} {value[2]} {value[3]} {value[4]}'))
+        f.write('%s:%s\n' % (f'{key}', f'{value[0]} {value[1]} {value[2]} {value[3]} {value[4]}'))
+
+# json.dump(sorted_d, )
+f1 = open("./dict2.json", 'w+')
+f1.write(str(sorted_d))
 
 
 

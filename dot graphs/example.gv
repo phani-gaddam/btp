@@ -1,6 +1,12 @@
 digraph G {
 	"a dummy" [label="This is label"]
-	2
+	4 [tooltip=<
+    <table BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"> 
+        <tr>
+            <td bgcolor="red" port="L">1</td>
+            <td bgcolor="blue" port="R"></td>
+        </tr>   
+     </table>         >]
 	C [label=<
     <table BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"> 
         <tr>
@@ -12,6 +18,14 @@ digraph G {
 <table cellpadding="0" cellborder="0" cellspacing="0" border="0">
 <tr>
 <td bgcolor="orange">abc</td>
+<td bgcolor="yellow">def</td>
+</tr>
+</table>
+>]
+	A [label=<
+<table cellpadding="0" cellborder="0" cellspacing="0" border="0" >
+<tr>
+<td bgcolor="orange" >abc</td>
 <td bgcolor="yellow">def</td>
 </tr>
 </table>
