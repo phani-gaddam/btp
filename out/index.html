@@ -46,7 +46,7 @@ function interactive() {
     nodes = d3.selectAll('.node,.edge');
     nodes
         .on("click", function () {
-            alert()
+            alert("ok")
             var title = d3.select(this).selectAll('title').text().trim();
             var text = d3.select(this).selectAll('text').text();
             var id = d3.select(this).attr('id');

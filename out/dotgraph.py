@@ -20,3 +20,5 @@ for k,v in data.items():
 
 
 g.render(outfile="final.svg")
+g.render(outfile="final.png")
+g.render(outfile="final.pdf")
