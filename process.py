@@ -291,7 +291,7 @@ def  process(filename):
     with open(os.path.join(filename), 'r') as f:
         data = json.load(f)
         graph = Graph(data, serviceName, operationName, filename, rootTrace)
-        graph.assignLevels()
+        # graph.assignLevels()
         
 
         return graph
