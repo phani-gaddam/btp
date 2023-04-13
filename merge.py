@@ -41,8 +41,7 @@ def compute_metrics(metrics):
         for key, value in sorted_d.items(): 
             f.write('%s:%s\n' % (f'{key[0]} {key[1]}', f'{value[0]} {value[1]} {value[2]} {value[3]} {value[4]}'))
 
-def getChildrenErrorDict(node:GraphNode,trace:Graph):
-    di = {}
+def getChildrenErrorDict(node:GraphNode,trace:Graph,di):
     for child in node.children.keys():
         serviceName = trace.processName[child.pid]
         key = (serviceName,child.opName)
@@ -87,7 +86,7 @@ def helper(node:GraphNode,d,trace:Graph):
         value[2] += 0
         value[3] += 0
     
-    d[key][4] = getChildrenErrorDict(node,trace)
+    d[key][4] = getChildrenErrorDict(node,trace,d[key][4])
 
     for node in children:
         helper(node,d,trace)
