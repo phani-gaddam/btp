@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 # reading the data from the file
-with open('out/dict.txt') as f:
+with open('../out/dict.txt') as f:
     data = f.read()
   
 data = data.splitlines()
@@ -14,7 +14,7 @@ names = []
 pairs = {}
 for pair in data:
     pair = pair.split(':')
-    values = list(map(int,pair[1].split()))
+    values = list(map(int,pair[1].split()[0:4]))
     key = tuple(pair[0].split())
     if values[0] != 0:
         pairs[key] = values
@@ -32,7 +32,7 @@ for pair in data:
 
 
 
-pairs = dict(sorted(pairs.items(), key = lambda x:x[1][2],reverse=True))
+pairs = dict(sorted(pairs.items(), key = lambda x:x[1][1],reverse=True))
 for key,values in pairs.items():    
     recovered = values[1]
     passed = values[2]
@@ -69,7 +69,7 @@ fig, (ax,plt1) = plt.subplots(2,1,sharex=True)
 # ax.bar(x, positive_data, width=0.1, color='b')
 ax.bar(names,positive_data,color='mediumseagreen')
 ax.bar(names,negative_data,color='tomato')
-ax.set_title("Sorted based on total errors received",pad=20)
+ax.set_title("Sorted based on total errors recovered",pad=20)
 plt.xticks(rotation=90)
 ax.set_ylabel("Percentage")
 
