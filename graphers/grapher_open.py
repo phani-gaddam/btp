@@ -10,10 +10,7 @@ import matplotlib.patches as mpatches
 
 # data = data.splitlines()
 
-# negative_data = []
-# positive_data = []
-# positive_value = []
-# negative_value = []
+
 # names = []
 # pairs = {}
 # for pair in data:
@@ -36,7 +33,7 @@ import matplotlib.patches as mpatches
 
 
 
-# pairs = dict(sorted(pairs.items(), key = lambda x:x[1][1],reverse=True))
+# pairs = dict(sorted(pairs.items(), key = lambda x:x[1][2],reverse=True))
 # for key,values in pairs.items():    
 #     recovered = values[1]
 #     passed = values[2]
@@ -52,20 +49,22 @@ import matplotlib.patches as mpatches
 #     negative_data.append(-100*passed_percent)
 #     negative_value.append(-1*passed)
     
-# # print(pairs)
+# print(pairs)
 
 # names = names[:10]
 # positive_data = positive_data[:10]
 # negative_data = negative_data[:10]
 #positive-negative bar graph using matplotlib?
-def plot_safe(pairs,percent):
+
+
+def plot_open(pairs,percent):
     negative_data = []
     positive_data = []
     positive_value = []
     negative_value = []
     names = []
 
-    pairs = dict(sorted(pairs.items(), key = lambda x:x[1][2],reverse=True))
+    pairs = dict(sorted(pairs.items(), key = lambda x:x[1][1],reverse=True))
     for key,values in pairs.items():
         recovered = values[1]
         passed = values[2]
@@ -80,7 +79,6 @@ def plot_safe(pairs,percent):
         negative_value.append(-1*passed)
 
     x = int(len(positive_data)*percent)
-
     names = names[0:x]
     positive_data = positive_data[0:x]
     positive_value = positive_value[0:x]
@@ -92,7 +90,7 @@ def plot_safe(pairs,percent):
     # ax.bar(x, positive_data, width=0.1, color='b')
     ax.bar(names,positive_data,color='mediumseagreen')
     ax.bar(names,negative_data,color='tomato')
-    ax.set_title("Sorted based on total errors recovered",pad=20)
+    ax.set_title("Sorted based on total errors passedon",pad=20)
     plt.xticks(rotation=90)
     ax.set_ylabel("Percentage")
 
@@ -118,8 +116,8 @@ def plot_safe(pairs,percent):
 
     plt.tight_layout()
     fig.set_figwidth(20)
-    plt.savefig('bar_safe.png')
-    plt.savefig('bar_safe.svg')
+    plt.savefig('bar_open.png')
+    plt.savefig('bar_open.svg')
 
 
 

@@ -4,7 +4,7 @@ import matplotlib.patches as mpatches
 # # reading the data from the file
 # with open('../out/dict.txt') as f:
 #     data = f.read()
-  
+
 # args = sys.argv
 # percent = int(args[1])/100
 
@@ -23,16 +23,16 @@ import matplotlib.patches as mpatches
 #     if values[0] != 0:
 #         pairs[key] = values
 
-# # new_dict = {}
-# # for (key,value) in pair.items():
-# #     # 0 -> positive percentage
-# #     # 1 -> negtaive percantage
-# #     # 2 -> total no.of fails count
-# #     new_dict[key] = (value[1] * 100 / value[0] , value[2] * 100 / value[0] , value[0])
+# new_dict = {}
+# for (key,value) in pair.items():
+#     # 0 -> positive percentage
+#     # 1 -> negtaive percantage
+#     # 2 -> total no.of fails count
+#     new_dict[key] = (value[1] * 100 / value[0] , value[2] * 100 / value[0] , value[0])
 
 
-# # # sort according to 0th index
-# # sorted_new_dict = dict(sorted(new_dict.items(), key = lambda x:x[0],reverse=True))
+# # sort according to 0th index
+# sorted_new_dict = dict(sorted(new_dict.items(), key = lambda x:x[0],reverse=True))
 
 
 
@@ -44,28 +44,17 @@ import matplotlib.patches as mpatches
 #     if summ==0:
 #         continue
 #     recovered_percent = recovered/summ
+#     pairs[key].append(100*recovered_percent)
 #     passed_percent = passed/summ
-#     names.append(f'{key}')
-#     positive_data.append(100*recovered_percent)
-#     positive_value.append(recovered)
+#     pairs[key].append(-100*passed_percent)
 
-#     negative_data.append(-100*passed_percent)
-#     negative_value.append(-1*passed)
-    
-# # print(pairs)
-
-# names = names[:10]
-# positive_data = positive_data[:10]
-# negative_data = negative_data[:10]
-#positive-negative bar graph using matplotlib?
-def plot_safe(pairs,percent):
+def plot_safe_percent(pairs,percent):
     negative_data = []
     positive_data = []
     positive_value = []
     negative_value = []
     names = []
-
-    pairs = dict(sorted(pairs.items(), key = lambda x:x[1][2],reverse=True))
+    pairs = dict(sorted(pairs.items(), key = lambda x:x[1][4],reverse=True))
     for key,values in pairs.items():
         recovered = values[1]
         passed = values[2]
@@ -78,6 +67,13 @@ def plot_safe(pairs,percent):
 
         negative_data.append(values[5])
         negative_value.append(-1*passed)
+        
+    # print(pairs)
+
+    # names = names[:10]
+    # positive_data = positive_data[:10]
+    # negative_data = negative_data[:10]
+    #positive-negative bar graph using matplotlib?
 
     x = int(len(positive_data)*percent)
 
@@ -87,12 +83,15 @@ def plot_safe(pairs,percent):
     negative_data = negative_data[0:x]
     negative_value = negative_value[0:x]
 
+
+
+
     fig, (ax,plt1) = plt.subplots(2,1,sharex=True)
     # ax.bar(x, negative_data, width=0.1, color='tomato')
     # ax.bar(x, positive_data, width=0.1, color='b')
     ax.bar(names,positive_data,color='mediumseagreen')
     ax.bar(names,negative_data,color='tomato')
-    ax.set_title("Sorted based on total errors recovered",pad=20)
+    ax.set_title("Sorted based on total percentage of errors recovered",pad=20)
     plt.xticks(rotation=90)
     ax.set_ylabel("Percentage")
 
@@ -118,8 +117,8 @@ def plot_safe(pairs,percent):
 
     plt.tight_layout()
     fig.set_figwidth(20)
-    plt.savefig('bar_safe.png')
-    plt.savefig('bar_safe.svg')
+    plt.savefig('bar_percent_safe.png')
+    plt.savefig('bar_percent_safe.svg')
 
 
 
