@@ -817,22 +817,3 @@ class Metrics():
         self.numNodes = descendants
         self.depth = depth
 
-class NewMetricsNode:
-    def __init__(self,serviceName,opName,errorFlag,hasErrorChild):
-        self.serviceName = serviceName
-        self.opName = opName
-        self.errorFlag = errorFlag
-        self.hasErrorChild = hasErrorChild
-    
-
-
-
-# def showErrors(graph: Graph) -> None:
-    # for k in graph.errorNodes:
-    #     now = k
-    #     while now:
-    #         # print(now)
-    #         print(now.sid, end=" -> ")
-    #         now = now.parent
-
-    #     print("None")
