@@ -73,18 +73,64 @@ def helper(node:GraphNode,d,trace:Graph):
     for node in children:
         helper(node,d,trace)
 
+def gradient(err_prcnt,color="red"):
+    h,s,v = rgb_to_hsv(255 - err_prcnt * 255.0/100.0, 255, 255)
+    print (f"{h/100.0} {s/100.0} {v/100.0}")
+    return f"{h/100.0} {s/100.0} {v/100.0}"
+    
+def rgb_to_hsv(r, g, b):
+  
+    # R, G, B values are divided by 255
+    # to change the range from 0..255 to 0..1:
+    r, g, b = r / 255.0, g / 255.0, b / 255.0
+  
+    # h, s, v = hue, saturation, value
+    cmax = max(r, g, b)    # maximum of r, g, b
+    cmin = min(r, g, b)    # minimum of r, g, b
+    diff = cmax-cmin       # diff of cmax and cmin.
+  
+    # if cmax and cmax are equal then h = 0
+    if cmax == cmin: 
+        h = 0
+      
+    # if cmax equal r then compute h
+    elif cmax == r: 
+        h = (60 * ((g - b) / diff) + 360) % 360
+  
+    # if cmax equal g then compute h
+    elif cmax == g:
+        h = (60 * ((b - r) / diff) + 120) % 360
+  
+    # if cmax equal b then compute h
+    elif cmax == b:
+        h = (60 * ((r - g) / diff) + 240) % 360
+  
+    # if cmax equal zero
+    if cmax == 0:
+        s = 0
+    else:
+        s = (diff / cmax) * 100
+  
+    # compute v
+    v = cmax * 100
+    return h, s, v
+
 def generatehtml(data):
     g = graphviz.Digraph('G', filename='tmp_gh.gv', format="svg")
 
+    max_errs = 0
     for k,v in data.items():
-        g.node(name=str(k),label=str(k))
+        max_errs = max(v[0],max_errs)
+
+    for k,v in data.items():
+        # g.node(name=str(k),label=str(k))
+        if v[0] != 0: # comtains errors
+            g.node(name=f"{k[0]} {k[1]}",label=f"{k[0]} {k[1]}",fillcolor=gradient(v[0]/max_errs*100),style="filled")
 
     print(data)
     for k,v in data.items():
-        print("+++++++++++++++++++++++")
         for n,val in v[4].items():
-            print("-----------------------------")
-            g.edge(str(n),str(k),weight=str(val),label=str(val))
+            g.edge(f"{n[0]} {n[1]}",f"{k[0]} {k[1]}",weight=str(val),label=str(val))
 
     g.render(outfile="tmp_gh.svg")
     g.render(outfile="tmp_gh.png")
@@ -100,7 +146,7 @@ def generatehtml(data):
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <style>
+       <style>
             .popup {
                 display: none;
             }
@@ -122,8 +168,8 @@ def generatehtml(data):
             .popup .contents {
                 border: 1px solid #ccc;
                 border-radius: 5px;
-                width: 200px;
-                height: 100px;
+                width: 800px;
+                height: 800px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -134,19 +180,58 @@ def generatehtml(data):
                 left: 50vw;
                 transform: translate(-50%, -50%);
             }
+
+            .popup .contents2 {
+                position: fixed;
+                background: #FFF;
+                min-height: 60vh;
+                min-width: 60vw;
+                /* top: 0px;
+                left: 0px;
+                transform: translate(25%, 50%); */
+                top: 50vh;
+                left: 50vw;
+                transform: translate(-50%, -50%);
+                /* right: 0px */
+            }
+
+
+            .grid-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-gap: 20px;
+            }
+
+            #piechart {
+                /* display: relative; */
+                /* display: none; */
+                /* width: 400px; */
+                background: aqua;
+            }
+
+            /* .canvasjs-chart-canvas {
+                position: relative !important;
+            } */
+
+            #data {
+                padding: 1rem;
+            }
         </style>
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script src="https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js"></script>
         <script src="https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js"></script>
+        <!-- <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> -->
+        <script src='https://cdn.plot.ly/plotly-2.20.0.min.js'></script>
         <title>Document</title>
     </head>
 
     <body>
         <div id="graph" style="text-align: center;"></div>
-        <div class="popup" id="myForm">
+        <div class="popup">
             <div class="blocker" onclick="hidePopup()"></div>
-            <div class="contents" id="actualpopup">
-                This is popup
+            <div class="contents2 grid-container" id="actualpopup">
+                <div id="data" style="min-width: 100px;"></div>
+                <div id="piechart"></div>
             </div>
         </div>
         <script>
@@ -155,7 +240,7 @@ def generatehtml(data):
         open("./tmp_gh.gv").read() + \
         """`;
         const DATA = """ + \
-            open("./dict.json").read() + \
+            str({f"'{k[0]} {k[1]}'":[v[0],v[1],v[2],v[3],{f"'{a[0]} {a[1]}'":b for a,b in v[4].items()}] for k,v in data.items()}) + \
         """
         var dotSrcLines;
 
@@ -216,7 +301,44 @@ def generatehtml(data):
             const popup = document.querySelector('.popup');
             function showPopup(title) {
                 var popup_contents = document.getElementById('actualpopup');
-                popup_contents.innerHTML = [DATA[title][0], DATA[title][1], DATA[title][2], DATA[title][3]];
+                var err_results = DATA[`'${title}'`];
+                var datadiv = document.getElementById('data');
+                datadiv.innerHTML = `<p>Total Error instances:${err_results[0]}</p><p>Recovered error instances:${err_results[1]}</p><p>Passed on error instances:${err_results[2]}</p><p>Total self errors produced:${err_results[3]}</p>`;
+                // var chart = new CanvasJS.Chart("piechart", {
+                // 	animationEnabled: true,
+                // 	data: [{
+                // 		type: "pie",
+                // 		startAngle: 240,
+
+                // 		indexLabel: "{label} : {y}",
+                // 		dataPoints: [
+                // 			{ y: 6000, label: "fail-safe", color: "green" },
+                // 			{ y: 3000, label: "fail-open", color: "red" }
+
+                // 		]
+                // 	}]
+                // });
+                // chart.render();
+                var v1 = err_results[1];
+                var v2 = err_results[2];
+
+                var data = [{
+                    values: [v1, v2],
+                    labels: ['Fail safe', 'Fail open'],
+                    type: 'pie',
+                    marker: {
+                        colors: ["mediumseagreen", "tomato"]
+                    }
+                }];
+
+
+                var layout = {
+                    // height: 400,
+                    // width: 500
+
+                };
+
+                Plotly.newPlot('piechart', data, layout, { displaylogo: false });
                 popup.classList.add('open');
             }
             function hidePopup() {
