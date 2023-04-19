@@ -2,7 +2,7 @@ import subprocess
 from graphers import plotall
 import graphviz
 from graph import *
-
+import logging
 
 def compute_metrics(metrics,outputdir):
     d = {}
@@ -14,14 +14,11 @@ def compute_metrics(metrics,outputdir):
 
     sorted_d = dict(sorted(d.items(), key = lambda x:x[1][0],reverse=True))
     
+    logging.info("Generating bar plots")
     plotall.plot_all(sorted_d,0.2,outputdir)
+    logging.info("Generating dot graph")
     generatehtml(sorted_d,outputdir)
 
-    # with open('./out/dict.txt', 'w+') as f:
-    #     for key, value in sorted_d.items(): 
-    #         f.write('%s:%s\n' % (f'{key[0]} {key[1]}', f'{value[0]} {value[1]} {value[2]} {value[3]} {value[4]}'))
-    # with open('./out/dict.json','w+') as file:
-    #     file.write(str(sorted_d))
 
 def getChildrenErrorDict(node:GraphNode,trace:Graph,di):
     for child in node.children.keys():
@@ -121,8 +118,6 @@ def generatehtml(data,outputdir):
     for k,v in data.items():
         max_errs = max(v[0],max_errs)
     
-    print(max_errs)
-
     for k,v in data.items():
         # g.node(name=str(k),label=str(k))
         if v[0] != 0: # comtains errors

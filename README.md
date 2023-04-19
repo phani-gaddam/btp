@@ -39,3 +39,4 @@ optional arguments:
                         Analyse the errors and produce graphs for the same
 ```
 
+Analyze Erros Flag will analyze the errors in the traces and represent the errors in services in bar plots and dot graphs.

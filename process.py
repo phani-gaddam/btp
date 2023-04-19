@@ -131,16 +131,29 @@ argParser.add_argument(
     help="excluding errors help"
 )
 
+argParser.add_argument(
+    '-ae',
+    '--analyzeErrors',
+    dest='AnalyzeErrors',
+    action='store_true',
+    default=False,
+    required=False,
+    help="analyzing errors"
+)
+
+
 args = argParser.parse_args()
 operationName = args.operationName
 serviceName = args.serviceName
 tracesDir = args.traceDir
+outputDir = args.outputDir
 topN = args.topN
 numOperation = args.numOperation
 numTrace = args.numTrace
 rootTrace = args.rootTrace
 withErrors = args.WithErrors
 excludingErrors = args.ExcludingErrors
+analyzeErrors = args.AnalyzeErrors
 anonymize = args.anonymize
 
 mode = None
@@ -158,11 +171,11 @@ elif excludingErrors is True:
 
 
 if args.file == None and args.traceDir == None:
-    print("One of --inpiut/--file should be set.")
+    print("One of --input/--file should be set.")
     sys.exit(-1)
 
 if args.file != None and args.traceDir != None:
-    print("Only one of --inpiut/--file should be set.")
+    print("Only one of --input/--file should be set.")
     sys.exit(-1)
 
 jaegerTraceFiles = []
@@ -291,14 +304,9 @@ def  process(filename):
     with open(os.path.join(filename), 'r') as f:
         data = json.load(f)
         graph = Graph(data, serviceName, operationName, filename, rootTrace)
-        # graph.assignLevels()
         
-
-        return graph
-
-        # to draw the bar graphs for visualization
-        return graph.getMetricsNew()
-
+        if analyzeErrors is True:
+            return graph
 
         if graph.rootNode == None:
             return Metrics({}, {}, {}, {}, {}, {}, {}, 0, 0, 0)
@@ -314,10 +322,6 @@ def  process(filename):
         debug_on and logging.debug("critical path:" + str(res))
 
         metrics = graph.getMetrics(res)
-        # metrics1 = graph.getMetrics(res1)
-        # metrics2 = graph.getMetrics(res2)
-
-        # metrics = graph.getMetrics(res)
         debug_on and logging.debug(metrics.opTimeExclusive)
 
         debug_on and logging.debug(
@@ -328,7 +332,6 @@ def  process(filename):
         metrics.opTimeExclusive['totalTime'] = graph.rootNode.duration
         metrics.opTimeInclusive['totalTime'] = graph.rootNode.duration
 
-        # graph.print_node(graph.rootNode)
         return metrics
         
 
@@ -341,54 +344,6 @@ def mapReduce(numWorkers, jaegerTraceFiles):
         metrics = p.map(process, jaegerTraceFiles)
 
     return metrics
-    # if type(metrics) == lis
-    # print(metrics)
-    # for m in metrics:
-    #     for i in m:
-    #         print(i)
-    #     print("-------------------------------------------")
-    # nodes = []
-    
-    # d = {}
-    # # key - [pid,opName]
-    # # value = [err_child_count,recovery_count,passed_on,produced_itself]
-    # for node in nodes:
-    #     key = (node.serviceName,node.opName)
-    #     if d.get(key) is not None:
-    #         if node.hasErrorChild == True and node.errorFlag == True:
-    #             value = d[key] 
-    #             value[0] += 1
-    #             value[1] += 0
-    #             value[2] += 1
-    #             value[3] += 0
-    #         if node.hasErrorChild == True and node.errorFlag == False:
-    #             value = d[key] 
-    #             value[0] += 1
-    #             value[1] += 1
-    #             value[2] += 0
-    #             value[3] += 0
-    #         if node.hasErrorChild == False and node.errorFlag == True:
-    #             value = d[key] 
-    #             value[0] += 0
-    #             value[1] += 0
-    #             value[2] += 0
-    #             value[3] += 1
-    #         if node.hasErrorChild == False and node.errorFlag == False:
-    #             value = d[key] 
-    #             value[0] += 0
-    #             value[1] += 0
-    #             value[2] += 0
-    #             value[3] += 0
-    #     else:
-    #         d[key] = [0,0,0,0]
-
-
-    # sorted_d = dict(sorted(d.items(), key = lambda x:x[1][0],reverse=True))
-
-    # with open('./out/dict.txt', 'w') as f:
-    #     for key, value in sorted_d.items(): 
-    #         f.write('%s:%s\n' % (f'{key[0]} {key[1]}', f'{value[0]} {value[1]} {value[2]} {value[3]}'))
-
 
 class SummaryResult:
     """
@@ -485,7 +440,7 @@ def getOutputDir():
     # Override if we have a file.
     if args.file != None:
         return os.path.dirname(args.file.name)
-    return tracesDir
+    return outputDir
 
 
 class PVal:
@@ -876,8 +831,12 @@ def sanitizeNames(metric):
 if __name__ == '__main__':
     logging.info("Starting mapReduce")
     metrics = mapReduce(args.parallelism, jaegerTraceFiles)
-    compute_metrics(metrics)
-    exit(0)
+
+    # in case of analyse error flad set to True, the metrics variable will hold the list of graphs
+    # those graphs are passed to compute_metrics
+    if analyzeErrors is True:
+        compute_metrics(metrics,getOutputDir())
+        exit(0)
 
     maxNodes = 0
     totalNodes = 0
