@@ -730,47 +730,6 @@ class Graph():
                        callpathTimeInclusive, inclusiveExampleMap, callChain,
                        self.rootNode.sid, descendants, depth)
 
-    def getMetricsNew(self) -> list[GraphNode]:
-        root:GraphNode = self.rootNode
-        # allNodes = [root]
-        # children = list(root.children.keys()) 
-        # while len(children) != 0:
-        #     now = children.pop(0)
-        #     allNodes.append(now)
-        #     children.extend(list(now.children.keys()))
-        
-        # return allNodes
-        # pair = [self.processName['']]
-        servname = self.processName[root.pid]
-        allNodes = [NewMetricsNode(servname,root.opName,root.errorFlag,root.hasErrorChildBranch)]
-        children = list(root.children.keys()) 
-        while len(children) != 0:
-            now = children.pop(0)
-            servname = self.processName[now.pid]
-            allNodes.append(NewMetricsNode(servname,now.opName,now.errorFlag,now.hasErrorChildBranch))
-            children.extend(list(now.children.keys()))
-
-        return allNodes
-    
-    def assignLevels(self):
-        def helper(node):
-            children = list(node.children.keys())
-            for child in children:
-                child.level = node.level + 1
-                helper(child)
-        
-
-        rootNode = self.rootNode
-        rootNode.level = 0
-        helper(rootNode)
-
-
-        
-    # def ps(self):
-    #     print(self.errorNodes)
-    def print_node(self,node):
-        print(node)
-
 
 def accumulateInDict(dictName, key, value):
     if key in dictName:

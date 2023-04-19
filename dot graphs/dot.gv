@@ -1,7 +1,0 @@
-digraph G {
-	A -> C
-	C -> B
-	B -> D
-	B -> E
-	E -> F
-}

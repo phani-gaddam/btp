@@ -1,48 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-# import sys
-# reading the data from the file
-# with open('../out/dict.txt') as f:
-#     data = f.read()
-  
-# data = data.splitlines()
 
-# args = sys.argv
-# percent = int(args[1])/100
-
-# negative_data = []
-# positive_data = []
-# positive_value = []
-# negative_value = []
-# names = []
-# pairs = {}
-# for pair in data:
-#     pair = pair.split(':')
-#     values = list(map(int,pair[1].split()[0:4]))
-#     key = tuple(pair[0].split())
-#     pairs[key] = values
-#     recovered = values[1]
-#     passed = values[2]
-#     summ = values[0]
-#     if summ==0:
-#         continue
-#     recovered_percent = recovered/summ
-#     passed_percent = passed/summ
-#     names.append(f'{key}')
-#     positive_data.append(100*recovered_percent)
-#     positive_value.append(recovered)
-
-#     negative_data.append(-100*passed_percent)
-#     negative_value.append(-1*passed)
-    
-# print(pairs)
-
-# names = names[:10]
-# positive_data = positive_data[:10]
-# negative_data = negative_data[:10]
-#positive-negative bar graph using matplotlib?
-
-def plot_total(pairs,percent):
+def plot_total(pairs,percent,outputdir):
     negative_data = []
     positive_data = []
     positive_value = []
@@ -72,18 +31,13 @@ def plot_total(pairs,percent):
     negative_value = negative_value[0:x]
 
     fig, (ax,plt1) = plt.subplots(2,1,sharex=True)
-    # ax.bar(x, negative_data, width=0.1, color='tomato')
-    # ax.bar(x, positive_data, width=0.1, color='b')
+
     ax.bar(names,positive_data,color='mediumseagreen')
     ax.bar(names,negative_data,color='tomato')
+
     ax.set_title("Sorted based on total errors received",pad=20)
     plt.xticks(rotation=90)
     ax.set_ylabel("Percentage")
-
-    # ax.set_ylabel("passed on percentage",fontdict={'color':'tomato'})
-
-
-
 
     plt1.bar(names,positive_value,color='mediumseagreen')
     plt1.bar(names,negative_value,color='tomato')
@@ -102,10 +56,8 @@ def plot_total(pairs,percent):
 
     plt.tight_layout()
     fig.set_figwidth(20)
-    plt.savefig('bar_total.png')
-    plt.savefig('bar_total.svg')
-
-
+    plt.savefig(f'{outputdir}/bar_total.png')
+    plt.savefig(f'{outputdir}/bar_total.svg')
 
     #Source: https://stackoverflow.com/questions/25550308
 

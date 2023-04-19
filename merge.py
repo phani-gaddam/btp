@@ -4,7 +4,7 @@ import graphviz
 from graph import *
 
 
-def compute_metrics(metrics):
+def compute_metrics(metrics,outputdir):
     d = {}
     for trace in metrics:
         # nodes.extend(nodelist.nodeHT)
@@ -14,14 +14,14 @@ def compute_metrics(metrics):
 
     sorted_d = dict(sorted(d.items(), key = lambda x:x[1][0],reverse=True))
     
-    # plotall.plot_all(sorted_d,0.2)
-    generatehtml(sorted_d)
+    plotall.plot_all(sorted_d,0.2,outputdir)
+    generatehtml(sorted_d,outputdir)
 
-    with open('./out/dict.txt', 'w+') as f:
-        for key, value in sorted_d.items(): 
-            f.write('%s:%s\n' % (f'{key[0]} {key[1]}', f'{value[0]} {value[1]} {value[2]} {value[3]} {value[4]}'))
-    with open('./out/dict.json','w+') as file:
-        file.write(str(sorted_d))
+    # with open('./out/dict.txt', 'w+') as f:
+    #     for key, value in sorted_d.items(): 
+    #         f.write('%s:%s\n' % (f'{key[0]} {key[1]}', f'{value[0]} {value[1]} {value[2]} {value[3]} {value[4]}'))
+    # with open('./out/dict.json','w+') as file:
+    #     file.write(str(sorted_d))
 
 def getChildrenErrorDict(node:GraphNode,trace:Graph,di):
     for child in node.children.keys():
@@ -75,7 +75,6 @@ def helper(node:GraphNode,d,trace:Graph):
 
 def gradient(err_prcnt,color="red"):
     h,s,v = rgb_to_hsv(255 - err_prcnt * 255.0/100.0, 255, 255)
-    print (f"{h/100.0} {s/100.0} {v/100.0}")
     return f"{h/100.0} {s/100.0} {v/100.0}"
     
 def rgb_to_hsv(r, g, b):
@@ -115,26 +114,27 @@ def rgb_to_hsv(r, g, b):
     v = cmax * 100
     return h, s, v
 
-def generatehtml(data):
+def generatehtml(data,outputdir):
     g = graphviz.Digraph('G', filename='tmp_gh.gv', format="svg")
 
     max_errs = 0
     for k,v in data.items():
         max_errs = max(v[0],max_errs)
+    
+    print(max_errs)
 
     for k,v in data.items():
         # g.node(name=str(k),label=str(k))
         if v[0] != 0: # comtains errors
             g.node(name=f"{k[0]} {k[1]}",label=f"{k[0]} {k[1]}",fillcolor=gradient(v[0]/max_errs*100),style="filled")
 
-    print(data)
     for k,v in data.items():
         for n,val in v[4].items():
             g.edge(f"{n[0]} {n[1]}",f"{k[0]} {k[1]}",weight=str(val),label=str(val))
 
-    g.render(outfile="tmp_gh.svg")
-    g.render(outfile="tmp_gh.png")
-    g.render(outfile="tmp_gh.pdf")
+    g.render(outfile=f"{outputdir}/tmp_gh.svg")
+    g.render(outfile=f"{outputdir}/tmp_gh.png")
+    g.render(outfile=f"{outputdir}/tmp_gh.pdf")
 
 
     html = """
@@ -146,7 +146,7 @@ def generatehtml(data):
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-       <style>
+        <style>
             .popup {
                 display: none;
             }
@@ -237,7 +237,7 @@ def generatehtml(data):
         <script>
             var dotSrc = `
     """ + \
-        open("./tmp_gh.gv").read() + \
+        open("./out/tmp_gh.gv").read() + \
         """`;
         const DATA = """ + \
             str({f"'{k[0]} {k[1]}'":[v[0],v[1],v[2],v[3],{f"'{a[0]} {a[1]}'":b for a,b in v[4].items()}] for k,v in data.items()}) + \
@@ -353,6 +353,6 @@ def generatehtml(data):
     </html>
         """
 
-    f = open('generated.html','w+')
+    f = open(f"{outputdir}/generated.html",'w+')
     f.write(html)
     f.close()

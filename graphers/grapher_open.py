@@ -1,63 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-# import sys
-# # reading the data from the file
-# with open('../out/dict.txt') as f:
-#     data = f.read()
-  
-# args = sys.argv
-# percent = int(args[1])/100
 
-# data = data.splitlines()
-
-
-# names = []
-# pairs = {}
-# for pair in data:
-#     pair = pair.split(':')
-#     values = list(map(int,pair[1].split()[0:4]))
-#     key = tuple(pair[0].split())
-#     if values[0] != 0:
-#         pairs[key] = values
-
-# # new_dict = {}
-# # for (key,value) in pair.items():
-# #     # 0 -> positive percentage
-# #     # 1 -> negtaive percantage
-# #     # 2 -> total no.of fails count
-# #     new_dict[key] = (value[1] * 100 / value[0] , value[2] * 100 / value[0] , value[0])
-
-
-# # # sort according to 0th index
-# # sorted_new_dict = dict(sorted(new_dict.items(), key = lambda x:x[0],reverse=True))
-
-
-
-# pairs = dict(sorted(pairs.items(), key = lambda x:x[1][2],reverse=True))
-# for key,values in pairs.items():    
-#     recovered = values[1]
-#     passed = values[2]
-#     summ = values[0]
-#     if summ==0:
-#         continue
-#     recovered_percent = recovered/summ
-#     passed_percent = passed/summ
-#     names.append(f'{key}')
-#     positive_data.append(100*recovered_percent)
-#     positive_value.append(recovered)
-
-#     negative_data.append(-100*passed_percent)
-#     negative_value.append(-1*passed)
-    
-# print(pairs)
-
-# names = names[:10]
-# positive_data = positive_data[:10]
-# negative_data = negative_data[:10]
-#positive-negative bar graph using matplotlib?
-
-
-def plot_open(pairs,percent):
+def plot_open(pairs,percent,outputdir):
     negative_data = []
     positive_data = []
     positive_value = []
@@ -116,8 +60,8 @@ def plot_open(pairs,percent):
 
     plt.tight_layout()
     fig.set_figwidth(20)
-    plt.savefig('bar_open.png')
-    plt.savefig('bar_open.svg')
+    plt.savefig(f'{outputdir}/bar_open.png')
+    plt.savefig(f'{outputdir}/bar_open.svg')
 
 
 

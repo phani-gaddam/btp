@@ -4,7 +4,7 @@ from pathlib import Path
 import json 
 import random
 
-os.makedirs('./injected/', exist_ok=True)
+os.makedirs('../injected/', exist_ok=True)
 
 args = sys.argv
 
@@ -12,7 +12,6 @@ fileOrFolder = args[1]
 min_err_prcnt = int(args[2])
 max_err_prcnt = int(args[3])
 
-os.makedirs(f'./injected/', exist_ok=True)
 
 files = []
 if os.path.isfile(fileOrFolder):
@@ -58,4 +57,4 @@ for file in files:
                         }
                     ]
 
-    json.dump(data,open(f"./injected/{fileName}",'w+'))
+    json.dump(data,open(f"../injected/{fileName}",'w+'))
