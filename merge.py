@@ -12,9 +12,9 @@ def compute_metrics(traces,outputdir):
     for trace in traces:
         
         # nodes.extend(nodelist.nodeHT)
-        #calling the helper function on rootnode of the graph
-        rootNode:GraphNode = trace.rootNode
-        #The helper function will populate the dictionary with the metric values
+        # calling the helper function on rootnode of the graph
+        rootNode: GraphNode = trace.rootNode
+        # The helper function will populate the dictionary with the metric values
         helper(rootNode,d,trace)
 
     # sorting the dictionary based on the first element in the list, this ensures all the entries are sorted based on the total errors received
@@ -25,19 +25,25 @@ def compute_metrics(traces,outputdir):
     logging.info("Generating bar plots")
     plotall.plot_all(sorted_d,0.2,outputdir)
     
-    
     logging.info("Generating dot graph")
+    # generating a html file in outputdir.
     generatehtml(sorted_d,outputdir)
 
 
 def getChildrenErrorDict(node:GraphNode,trace:Graph,di):
+    # iterate over children of node
     for child in node.children.keys():
         serviceName = trace.processName[child.pid]
+        # initialize key tuple
         key = (serviceName,child.opName)
 
         if child.errorFlag == True:
+            # if child is not present in 'di' dictionary already,
+            # make an entry with value = 1
             if di.get(key) is None:
                 di[key] = 1
+            # if key is already present, 
+            # increase by 1.
             else:
                 di[key] += 1
         
@@ -53,11 +59,12 @@ def helper(node:GraphNode,d,trace:Graph):
     if d.get(key) is None:
         d[key] = [0,0,0,0,{}]
     
-    # error Flag - child return error - error_child_count - error_recovery_count - error_passedon_count - error_produced_by_itself_count
-    # True          True                    +1                      +0                      +1                  +0
-    # True          False                   +0                      +0                      +0                  +1
-    # False         True                    +1                      +1                      +0                  +0
-    # False         False                   +0                      +0                      +0                  +0
+    # error Flag | child return error | error_child_count | error_recovery_count | error_passedon_count | error_produced_by_itself_count
+    # -----------|--------------------|-------------------|----------------------|----------------------|-------------------------------
+    # True       |   True             |       +1          |            +0        |              +1      |            +0
+    # True       |   False            |       +0          |            +0        |              +0      |            +1
+    # False      |   True             |       +1          |            +1        |              +0      |            +0
+    # False      |   False            |       +0          |            +0        |              +0      |            +0
     if node.hasErrorChild == True and node.errorFlag == True:
         value = d[key] 
         value[0] += 1
@@ -92,7 +99,8 @@ def helper(node:GraphNode,d,trace:Graph):
 def gradient(err_prcnt,color="red"):
     h,s,v = rgb_to_hsv(255 - err_prcnt * 255.0/100.0, 255, 255)
     return f"{h/100.0} {s/100.0} {v/100.0}"
-    
+
+# link: https://www.geeksforgeeks.org/program-change-rgb-color-model-hsv-color-model/
 def rgb_to_hsv(r, g, b):
     # R, G, B values are divided by 255
     # to change the range from 0..255 to 0..1:
