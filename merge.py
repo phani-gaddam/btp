@@ -4,18 +4,28 @@ import graphviz
 from graph import *
 import logging
 
-def compute_metrics(metrics,outputdir):
+def compute_metrics(traces,outputdir):
+    # creating an empty dictionary to house the metrics
     d = {}
-    for trace in metrics:
-        # nodes.extend(nodelist.nodeHT)
-        rootNode:GraphNode = trace.rootNode
+    
+    #iterating through all the graphs
+    for trace in traces:
         
+        # nodes.extend(nodelist.nodeHT)
+        #calling the helper function on rootnode of the graph
+        rootNode:GraphNode = trace.rootNode
+        #The helper function will populate the dictionary with the metric values
         helper(rootNode,d,trace)
 
+    # sorting the dictionary based on the first element in the list, this ensures all the entries are sorted based on the total errors received
     sorted_d = dict(sorted(d.items(), key = lambda x:x[1][0],reverse=True))
     
+    # calling plot_all function from the grapher module in the project
+    # This module draws bar plots for all the
     logging.info("Generating bar plots")
     plotall.plot_all(sorted_d,0.2,outputdir)
+    
+    
     logging.info("Generating dot graph")
     generatehtml(sorted_d,outputdir)
 
