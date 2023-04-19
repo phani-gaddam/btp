@@ -35,4 +35,7 @@ optional arguments:
                         get critical path that only shows errors in the original critical path
   -ee, --excludingErrors
                         get critical path and exclude error containing nodes in identification. 
+  -ae, --analyseErrors
+                        Analyse the errors and produce graphs for the same
 ```
+
