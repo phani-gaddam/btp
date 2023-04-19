@@ -8,6 +8,7 @@ def plot_open(pairs,percent,outputdir):
     negative_value = []
     names = []
 
+    #populating the lists for matplotlib
     pairs = dict(sorted(pairs.items(), key = lambda x:x[1][1],reverse=True))
     for key,values in pairs.items():
         recovered = values[1]
@@ -32,6 +33,8 @@ def plot_open(pairs,percent,outputdir):
     fig, (ax,plt1) = plt.subplots(2,1,sharex=True)
     # ax.bar(x, negative_data, width=0.1, color='tomato')
     # ax.bar(x, positive_data, width=0.1, color='b')
+
+    #drawing bar plots required
     ax.bar(names,positive_data,color='mediumseagreen')
     ax.bar(names,negative_data,color='tomato')
     ax.set_title("Sorted based on total errors passedon",pad=20)

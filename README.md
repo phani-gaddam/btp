@@ -1,6 +1,11 @@
-# CRISP: Critical Path Analysis of Microservice Traces
+# Error Analysis of Microservice Traces
 
 This repo contains code to compute and present critical path summary from [Jaeger](https://github.com/jaegertracing/jaeger) microservice traces.
+
+It also contains code to compute critical paths considering errors which show the amount of useful and wasted work. This functionality is triggered using special parser flags and those flags are in the help section below.
+
+It also contains functionality to generate pair-wise error metrics and represent them in bar plots and dot graphs.
+
 To use first collect the microservice traces of a specific endpoint in a directory (say `traces`).
 Let the traces be for `OP` operation and `SVC` service (these are Jaeger termonologies).
 `python3 process.py --operationName OP --serviceName SVC -t <path to trace> -o . --parallelism 8` will produce the critical path summary using 8 concurrent processes. 
@@ -40,3 +45,9 @@ optional arguments:
 ```
 
 Analyze Erros Flag will analyze the errors in the traces and represent the errors in services in bar plots and dot graphs.
+
+The functions to generate pair-wise metrics are all in the `merge.py` file.
+
+This function calls the `plot_all` function from the graphers module. The graphers module contains five files, each house is a fucntion that sorts the inout dictionary based on different variables and generates plots accordingly.
+
+The `merge.py` file also contains a function `generatehtml` which generates a dot graph based on the matrix and incorporates it into a html file.
