@@ -305,6 +305,7 @@ def  process(filename):
         data = json.load(f)
         graph = Graph(data, serviceName, operationName, filename, rootTrace)
         
+        # if analyse errors flag is true then return the graph itself rather than the metrics metrics are computed seperately in the main section
         if analyzeErrors is True:
             return graph
 
@@ -834,6 +835,7 @@ if __name__ == '__main__':
 
     # in case of analyse error flad set to True, the metrics variable will hold the list of graphs
     # those graphs are passed to compute_metrics
+    #compute metics resides in the merge.py file
     if analyzeErrors is True:
         compute_metrics(metrics,getOutputDir())
         exit(0)
