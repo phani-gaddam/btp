@@ -45,11 +45,19 @@ def getChildrenErrorDict(node:GraphNode,trace:Graph,di):
     
 def helper(node:GraphNode,d,trace:Graph):
     children = node.children.keys()
-    # serviceName = self.processName[root.pid]
     serviceName = trace.processName[node.pid]
     key = (serviceName,node.opName)
+
+    # if key i.e., service-operation pair are not present
+    # insert a default value.
     if d.get(key) is None:
         d[key] = [0,0,0,0,{}]
+    
+    # error Flag - child return error - error_child_count - error_recovery_count - error_passedon_count - error_produced_by_itself_count
+    # True          True                    +1                      +0                      +1                  +0
+    # True          False                   +0                      +0                      +0                  +1
+    # False         True                    +1                      +1                      +0                  +0
+    # False         False                   +0                      +0                      +0                  +0
     if node.hasErrorChild == True and node.errorFlag == True:
         value = d[key] 
         value[0] += 1
@@ -80,12 +88,12 @@ def helper(node:GraphNode,d,trace:Graph):
     for node in children:
         helper(node,d,trace)
 
+# takes error percentage (0 - 100) and returns a gradient of color red corresponding to the percentage.
 def gradient(err_prcnt,color="red"):
     h,s,v = rgb_to_hsv(255 - err_prcnt * 255.0/100.0, 255, 255)
     return f"{h/100.0} {s/100.0} {v/100.0}"
     
 def rgb_to_hsv(r, g, b):
-  
     # R, G, B values are divided by 255
     # to change the range from 0..255 to 0..1:
     r, g, b = r / 255.0, g / 255.0, b / 255.0
@@ -122,21 +130,25 @@ def rgb_to_hsv(r, g, b):
     return h, s, v
 
 def generatehtml(data,outputdir):
+    # initialize Directed graph
     g = graphviz.Digraph('G', filename='tmp_gh.gv', format="svg")
 
-    max_errs = 0
+
+    max_errs = 0 # stores maximum errors
     for k,v in data.items():
         max_errs = max(v[0],max_errs)
     
+    # add each service,operation pair as a node to the graph
     for k,v in data.items():
-        # g.node(name=str(k),label=str(k))
         if v[0] != 0: # comtains errors
             g.node(name=f"{k[0]} {k[1]}",label=f"{k[0]} {k[1]}",fillcolor=gradient(v[0]/max_errs*100),style="filled")
 
+    # add edges between nodes 
     for k,v in data.items():
         for n,val in v[4].items():
             g.edge(f"{n[0]} {n[1]}",f"{k[0]} {k[1]}",weight=str(val),label=str(val))
 
+    # save in different formats
     g.render(outfile=f"{outputdir}/tmp_gh.svg")
     g.render(outfile=f"{outputdir}/tmp_gh.png")
     g.render(outfile=f"{outputdir}/tmp_gh.pdf")
@@ -358,6 +370,7 @@ def generatehtml(data,outputdir):
     </html>
         """
 
+    # save the html into generated.html
     f = open(f"{outputdir}/generated.html",'w+')
     f.write(html)
     f.close()
